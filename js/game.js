@@ -542,3 +542,71 @@ var game = {
 $(document).ready(function() {
   game.start();
 });
+
+// Simpan data siswa di local storage
+localStorage.setItem('nama', 'John Doe');
+localStorage.setItem('noAbsen', '12345');
+
+// Tampilkan form dengan data siswa
+document.addEventListener('DOMContentLoaded', function() {
+  const nama = localStorage.getItem('nama');
+  const noAbsen = localStorage.getItem('noAbsen');
+  const form = document.getElementById('form');
+  const namaInput = document.getElementById('nama');
+  const noAbsenInput = document.getElementById('noAbsen');
+
+  namaInput.value = nama;
+  noAbsenInput.value = noAbsen;
+
+  // Tampilkan form
+  form.style.display = 'block';
+});
+
+// Buat timer untuk menghitung waktu pengerjaan
+let waktuPengerjaan = 20 * 60; // 20 menit
+let timerInterval;
+
+// Fungsi untuk mengupdate waktu pengerjaan
+function updateWaktuPengerjaan() {
+  const waktuPengerjaanElement = document.getElementById('waktuPengerjaan');
+  const menit = Math.floor(waktuPengerjaan / 60);
+  const detik = waktuPengerjaan % 60;
+  waktuPengerjaanElement.textContent = `${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+  waktuPengerjaan -= 1;
+  if (waktuPengerjaan <= 0) {
+    clearInterval(timerInterval);
+    // Tampilkan hasil jawaban
+    tampilkanHasilJawaban();
+  }
+}
+
+// Fungsi untuk memulai timer
+function mulaiTimer() {
+  timerInterval = setInterval(updateWaktuPengerjaan, 1000);
+}
+
+// Fungsi untuk menampilkan hasil jawaban
+function tampilkanHasilJawaban() {
+  const jawabanBenar = 0; // Simpan jawaban benar
+  const jawabanSalah = 0; // Simpan jawaban salah
+  const hasilJawabanElement = document.getElementById('hasilJawaban');
+  hasilJawabanElement.textContent = `Hasil Jawaban: ${jawabanBenar} benar, ${jawabanSalah} salah`;
+  hasilJawabanElement.style.display = 'block';
+}
+
+// Tambahkan event listener untuk memulai timer
+document.getElementById('mulai').addEventListener('click', function() {
+  mulaiTimer();
+});
+
+// Tambahkan event listener untuk mengirimkan jawaban
+document.getElementById('kirim').addEventListener('click', function() {
+  // Simpan jawaban
+  const jawaban = [];
+  const jawabanElements = document.querySelectorAll('.jawaban');
+  jawabanElements.forEach(function(element) {
+    jawaban.push(element.value);
+  });
+  // Tampilkan hasil jawaban
+  tampilkanHasilJawaban();
+});

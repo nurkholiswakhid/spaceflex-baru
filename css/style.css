@@ -417,6 +417,42 @@ button:not(.disabled):hover {
   position: relative;
 }
 
+#form-pemain {
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+#form-pemain label {
+  display: block;
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+#form-pemain input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#mulai-permainan {
+  padding: 10px 15px;
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#mulai-permainan:hover {
+  background-color: #5502c8;
+}
+
+
 .toggle {
   display: inline-block;
   padding: 1px 8px;
