@@ -8,11 +8,16 @@ var game = {
   changed: false,
   clickedCode: null,
   timer: null,   // Timer variable
+  timerStarted: false, // Flag to track if the timer has started
+
   timeLeft: 1200, // 20 minutes in seconds (1200 seconds)
 
   // Function to start the timer
   startTimer: function() {
+    if (this.timerStarted) return; // Prevent starting the timer again
+    this.timerStarted = true; // Set the flag to true
     var timerDisplay = document.getElementById('timer'); // Timer display element
+
     game.timer = setInterval(function() {
       if (game.timeLeft > 0) {
         game.timeLeft--;
@@ -34,6 +39,8 @@ var game = {
 
   // Function to reset the timer
   resetTimer: function() {
+    this.timerStarted = false;    // Reset the timer started flag
+
     clearInterval(game.timer);  // Stop the timer
     game.timeLeft = 1200;        // Reset to 20 minutes
   },
@@ -63,7 +70,6 @@ var game = {
 
                 localStorage.setItem('playerName', playerName);
                 localStorage.setItem('playerAbsence', playerAbsence);
-                game.startTimer(); // Start the timer after setting localStorage
                 return true;
             }
         }).then((result) => {
@@ -72,12 +78,21 @@ var game = {
             }
         });
     } else {
-        game.startTimer(); // Start the timer if data exists
         startGame();  // Start immediately if data exists
     }
   },
 
   start: function() {
+    const savedName = localStorage.getItem('playerName');
+    const savedAbsence = localStorage.getItem('playerAbsence');
+
+    if (!savedName || !savedAbsence) {
+        game.showInputPopup(); // Prompt for input if data is missing
+        return; // Exit the function to prevent starting the timer
+    } else {
+        game.startTimer(); // Start the timer if both values exist
+    }
+
     var requestLang = window.navigator.language.split('-')[0];
     if (window.location.hash === '' && requestLang !== 'en' && messages.languageActive.hasOwnProperty(requestLang)) {
       game.language = requestLang;
@@ -98,6 +113,8 @@ var game = {
     // Do not start the timer here, we will start it when the player clicks "Start Game"
   },
 
+
+// Call this function when starting the game
 
 
 
@@ -174,7 +191,9 @@ var game = {
           cancelButtonText: 'Cancel'
       }).then((result) => {
           if (result.isConfirmed) {
-              game.resetTimer();  // Reset the timer when the game is reset
+            game.resetTimer();  // Reset the timer when the game is reset
+            game.timerStarted = false; // Reset the timer started flag
+
               game.level = 0;
               game.answers = {};
               game.solved = [];
@@ -632,4 +651,3 @@ $(document).ready(function() {
 });
 
 game.showInputPopup();
-
