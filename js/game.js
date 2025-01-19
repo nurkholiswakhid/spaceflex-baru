@@ -7,10 +7,77 @@ var game = {
   solved: (localStorage.solved && JSON.parse(localStorage.solved)) || [],
   changed: false,
   clickedCode: null,
+  timer: null,   // Timer variable
+  timeLeft: 1200, // 20 minutes in seconds (1200 seconds)
+
+  // Function to start the timer
+  startTimer: function() {
+    var timerDisplay = document.getElementById('timer'); // Timer display element
+    game.timer = setInterval(function() {
+      if (game.timeLeft > 0) {
+        game.timeLeft--;
+        var minutes = Math.floor(game.timeLeft / 60);
+        var seconds = game.timeLeft % 60;
+        timerDisplay.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      } else {
+        clearInterval(game.timer);  // Stop the timer
+        alert("Time's up! Game over.");
+        game.endGame();  // End the game
+      }
+    }, 1000);  // Update every second
+  },
+
+  // Function to stop the timer
+  stopTimer: function() {
+    clearInterval(game.timer);  // Stop the timer
+  },
+
+  // Function to reset the timer
+  resetTimer: function() {
+    clearInterval(game.timer);  // Stop the timer
+    game.timeLeft = 1200;        // Reset to 20 minutes
+  },
+
+  showInputPopup: function() {
+    const savedName = localStorage.getItem('playerName');
+    const savedAbsence = localStorage.getItem('playerAbsence');
+
+    if (!savedName || !savedAbsence) {
+        Swal.fire({
+            title: 'Welcome!',
+            html: ` 
+                <input id="nameInput" class="swal2-input" placeholder="Enter your name" value="${savedName || ''}">
+                <input id="absenceInput" class="swal2-input" placeholder="Enter your absence number" value="${savedAbsence || ''}">
+            `,
+            confirmButtonText: 'Start Game',
+            focusConfirm: false,
+            allowOutsideClick: false,
+            preConfirm: () => {
+                const playerName = document.getElementById('nameInput').value;
+                const playerAbsence = document.getElementById('absenceInput').value;
+
+                if (!playerName || !playerAbsence) {
+                    Swal.showValidationMessage('Both name and absence number are required!');
+                    return false;
+                }
+
+                localStorage.setItem('playerName', playerName);
+                localStorage.setItem('playerAbsence', playerAbsence);
+                game.startTimer(); // Start the timer after setting localStorage
+                return true;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                startGame();  // Call startGame when user confirms
+            }
+        });
+    } else {
+        game.startTimer(); // Start the timer if data exists
+        startGame();  // Start immediately if data exists
+    }
+  },
 
   start: function() {
-    // navigator.language can include '-'
-    // ref: https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage/language
     var requestLang = window.navigator.language.split('-')[0];
     if (window.location.hash === '' && requestLang !== 'en' && messages.languageActive.hasOwnProperty(requestLang)) {
       game.language = requestLang;
@@ -27,7 +94,12 @@ var game = {
     this.setHandlers();
     this.loadMenu();
     game.loadLevel(levels[game.level]);
+
+    // Do not start the timer here, we will start it when the player clicks "Start Game"
   },
+
+
+
 
   setHandlers: function() {
     $('#next').on('click', function() {
@@ -89,26 +161,44 @@ var game = {
     $('#editor').on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
       $(this).removeClass();
     });
-
     $('#labelReset').on('click', function() {
-      var warningReset = messages.warningReset[game.language] || messages.warningReset.en;
-      var r = confirm(warningReset);
-
-      if (r) {
-        game.level = 0;
-        game.answers = {};
-        game.solved = [];
-        game.loadLevel(levels[0]);
-
-        $('.level-marker').removeClass('solved');
-      }
+      var warningReset = messages.warningReset[game.language] || messages.warningReset['en']; // Mengambil pesan berdasarkan bahasa aktif
+    
+      // Menampilkan SweetAlert2 sebagai pop-up
+      Swal.fire({
+          title: 'Warning',
+          text: warningReset,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Reset!',
+          cancelButtonText: 'Cancel'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              game.resetTimer();  // Reset the timer when the game is reset
+              game.level = 0;
+              game.answers = {};
+              game.solved = [];
+              game.loadLevel(levels[0]);
+    
+              // Menghapus data nama dan nomor absen dari localStorage
+              localStorage.removeItem('playerName');
+              localStorage.removeItem('playerAbsence');
+    
+              // Menampilkan pop-up untuk input nama dan nomor absen kembali
+              game.showInputPopup();
+    
+              // Menghapus status level yang sudah diselesaikan
+              $('.level-marker').removeClass('solved');
+          }
+      });
     });
-
+    
     $('#labelSettings').on('click', function() {
       $('#levelsWrapper').hide();
       $('#settings .tooltip').toggle();
       $('#instructions .tooltip').remove();
-    })
+    });
+    
 
     $('#language').on('change', function() {
       window.location.hash = $(this).val();
@@ -176,10 +266,7 @@ var game = {
       game.language = window.location.hash.substring(1) || 'en';
       game.translate();
 
-      $('#tweet iframe').remove();
-      var html = '<a href="https://twitter.com/share" class="twitter-share-button"{count} data-url="https://flexboxfroggy.com" data-via="thomashpark">Tweet</a> ' +
-                 '<a href="https://twitter.com/thomashpark" class="twitter-follow-button" data-show-count="false">Follow @thomashpark</a>';
-      $('#tweet').html(html);
+    
 
       if (typeof twttr !== 'undefined') {
         twttr.widgets.load();
@@ -539,74 +626,10 @@ var game = {
   }
 };
 
+
 $(document).ready(function() {
   game.start();
 });
 
-// Simpan data siswa di local storage
-localStorage.setItem('nama', 'John Doe');
-localStorage.setItem('noAbsen', '12345');
+game.showInputPopup();
 
-// Tampilkan form dengan data siswa
-document.addEventListener('DOMContentLoaded', function() {
-  const nama = localStorage.getItem('nama');
-  const noAbsen = localStorage.getItem('noAbsen');
-  const form = document.getElementById('form');
-  const namaInput = document.getElementById('nama');
-  const noAbsenInput = document.getElementById('noAbsen');
-
-  namaInput.value = nama;
-  noAbsenInput.value = noAbsen;
-
-  // Tampilkan form
-  form.style.display = 'block';
-});
-
-// Buat timer untuk menghitung waktu pengerjaan
-let waktuPengerjaan = 20 * 60; // 20 menit
-let timerInterval;
-
-// Fungsi untuk mengupdate waktu pengerjaan
-function updateWaktuPengerjaan() {
-  const waktuPengerjaanElement = document.getElementById('waktuPengerjaan');
-  const menit = Math.floor(waktuPengerjaan / 60);
-  const detik = waktuPengerjaan % 60;
-  waktuPengerjaanElement.textContent = `${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
-  waktuPengerjaan -= 1;
-  if (waktuPengerjaan <= 0) {
-    clearInterval(timerInterval);
-    // Tampilkan hasil jawaban
-    tampilkanHasilJawaban();
-  }
-}
-
-// Fungsi untuk memulai timer
-function mulaiTimer() {
-  timerInterval = setInterval(updateWaktuPengerjaan, 1000);
-}
-
-// Fungsi untuk menampilkan hasil jawaban
-function tampilkanHasilJawaban() {
-  const jawabanBenar = 0; // Simpan jawaban benar
-  const jawabanSalah = 0; // Simpan jawaban salah
-  const hasilJawabanElement = document.getElementById('hasilJawaban');
-  hasilJawabanElement.textContent = `Hasil Jawaban: ${jawabanBenar} benar, ${jawabanSalah} salah`;
-  hasilJawabanElement.style.display = 'block';
-}
-
-// Tambahkan event listener untuk memulai timer
-document.getElementById('mulai').addEventListener('click', function() {
-  mulaiTimer();
-});
-
-// Tambahkan event listener untuk mengirimkan jawaban
-document.getElementById('kirim').addEventListener('click', function() {
-  // Simpan jawaban
-  const jawaban = [];
-  const jawabanElements = document.querySelectorAll('.jawaban');
-  jawabanElements.forEach(function(element) {
-    jawaban.push(element.value);
-  });
-  // Tampilkan hasil jawaban
-  tampilkanHasilJawaban();
-});
