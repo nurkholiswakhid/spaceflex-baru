@@ -10,7 +10,7 @@ var game = {
   timer: null,   // Timer variable
   timerStarted: false, // Flag to track if the timer has started
 
-  timeLeft: 1200, // 20 minutes in seconds (1200 seconds)
+  timeLeft: localStorage.getItem('timeLeft') ? parseInt(localStorage.getItem('timeLeft'), 10) : 1200, // 20 minutes in seconds (1200 seconds)
 
   // Function to start the timer
   startTimer: function() {
@@ -21,6 +21,7 @@ var game = {
     game.timer = setInterval(function() {
       if (game.timeLeft > 0) {
         game.timeLeft--;
+        localStorage.setItem('timeLeft', game.timeLeft); // Save timeLeft to localStorage
         var minutes = Math.floor(game.timeLeft / 60);
         var seconds = game.timeLeft % 60;
         timerDisplay.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
@@ -35,14 +36,15 @@ var game = {
   // Function to stop the timer
   stopTimer: function() {
     clearInterval(game.timer);  // Stop the timer
+    localStorage.setItem('timeLeft', game.timeLeft); // Save current timeLeft to localStorage
   },
 
   // Function to reset the timer
   resetTimer: function() {
     this.timerStarted = false;    // Reset the timer started flag
-
     clearInterval(game.timer);  // Stop the timer
     game.timeLeft = 1200;        // Reset to 20 minutes
+    localStorage.removeItem('timeLeft'); // Clear timeLeft from localStorage
   },
 
   showInputPopup: function() {
@@ -113,10 +115,7 @@ var game = {
     // Do not start the timer here, we will start it when the player clicks "Start Game"
   },
 
-
-// Call this function when starting the game
-
-
+  // Call this function when starting the game
 
   setHandlers: function() {
     $('#next').on('click', function() {
@@ -281,11 +280,10 @@ var game = {
       localStorage.setItem('answers', JSON.stringify(game.answers));
       localStorage.setItem('solved', JSON.stringify(game.solved));
       localStorage.setItem('colorblind', JSON.stringify(game.colorblind));
+      localStorage.setItem('timeLeft', game.timeLeft); // Save timeLeft before unloading
     }).on('hashchange', function() {
       game.language = window.location.hash.substring(1) || 'en';
       game.translate();
-
-    
 
       if (typeof twttr !== 'undefined') {
         twttr.widgets.load();
@@ -585,7 +583,7 @@ var game = {
       var label = $(this).attr('id');
       if (messages[label]) {
         var text = messages[label][game.language] || messages[label].en;
-	  }
+      }
 
       $('#' + label).text(text);
     });
@@ -644,7 +642,6 @@ var game = {
     $('#code').focus();
   }
 };
-
 
 $(document).ready(function() {
   game.start();
