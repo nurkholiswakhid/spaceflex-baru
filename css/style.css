@@ -52,7 +52,6 @@ body {
   margin-bottom: 10px;
 }
 
-
 .header {
   display: flex;
   flex-wrap: wrap;
@@ -189,7 +188,6 @@ a:hover {
 #instructions,
 #instructions p,
 #instructions ul {
-	/* helps prevent the difficulty animation from jumping */
 	margin: 0;
   padding-bottom: 1em;
 }
@@ -460,7 +458,6 @@ button:not(.disabled):hover {
   background-color: #5502c8;
 }
 
-
 .toggle {
   display: inline-block;
   padding: 1px 8px;
@@ -630,7 +627,7 @@ button:not(.disabled):hover {
 ::view-transition-old(--frog14),
 ::view-transition-new(--frog14),
 ::view-transition-old(--frog15),
-::view-transition-new(--frog15), {
+::view-transition-new(--frog15) {
   height: 100%;
 }
 
@@ -679,47 +676,24 @@ button:not(.disabled):hover {
   background-image: url("../images/lilypad-green.svg");
 }
 
-.lilypad.green.cb-friendly .bg {
-  background-image: url("../images/lilypad-green-color-assist.svg");
-}
-
 .lilypad.red .bg {
   background-image: url("../images/lilypad-red.svg");
 }
 
-.lilypad.red.cb-friendly .bg {
-  background-image: url("../images/lilypad-red-color-assist.svg");
-}
-
 .lilypad.yellow .bg {
   background-image: url("../images/lilypad-yellow.svg");
-}
-.lilypad.yellow.cb-friendly .bg {
-  background-image: url("../images/lilypad-yellow-color-assist.svg");
 }
 
 .frog.green .bg {
   background-image: url("../images/frog-green.svg");
 }
 
-.frog.green.cb-friendly .bg {
-  background-image: url("../images/frog-green-color-assist.svg");
-}
-
 .frog.red .bg {
   background-image: url("../images/frog-red.svg");
 }
 
-.frog.red.cb-friendly .bg {
-  background-image: url("../images/frog-red-color-assist.svg");
-}
-
 .frog.yellow .bg {
   background-image: url("../images/frog-yellow.svg");
-}
-
-.frog.yellow.cb-friendly .bg {
-  background-image: url("../images/frog-yellow-color-assist.svg");
 }
 
 .wrap {
@@ -775,7 +749,6 @@ button:not(.disabled):hover {
   line-height: 1.5;
 }
 
-
 .native-ad .sponsor {
   position: relative;
   top: -1px;
@@ -791,4 +764,3 @@ button:not(.disabled):hover {
   font-weight: 600;
   line-height: 1;
 }
-
