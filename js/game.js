@@ -72,17 +72,21 @@ var game = {
 
                 localStorage.setItem('playerName', playerName);
                 localStorage.setItem('playerAbsence', playerAbsence);
+                
+                // Refresh halaman setelah data disimpan
+                location.reload();
                 return true;
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                startGame();  // Call startGame when user confirms
+                startGame(); 
+                // Call startGame when user confirms
             }
         });
     } else {
         startGame();  // Start immediately if data exists
     }
-  },
+},
 
   start: function() {
     const savedName = localStorage.getItem('playerName');
