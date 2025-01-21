@@ -15,6 +15,12 @@ var messages = {
     'en': 'Level',
     'id': 'Tingkat',
   },
+
+  timeRemaining:{
+    'en': 'Time Left:',
+    'id': 'Waktu Tersisa:',
+  },
+
   labelOf: {
     'en': 'of',
     'id': 'dari',
