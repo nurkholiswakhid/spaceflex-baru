@@ -24,7 +24,7 @@ var game = {
         localStorage.setItem('timeLeft', game.timeLeft); // Save timeLeft to localStorage
         var minutes = Math.floor(game.timeLeft / 60);
         var seconds = game.timeLeft % 60;
-        timerDisplay.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        timerDisplay.textContent = ` ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
       } else {
         clearInterval(game.timer);  // Stop the timer
         alert("Time's up! Game over.");
