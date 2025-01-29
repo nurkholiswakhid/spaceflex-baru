@@ -69,12 +69,5 @@ var messages = {
     'en': 'Beginner',
     'id': 'pemula',
   },
-  labelDifficultyMedium: {
-    'en': 'Intermediate - No Directions',
-    'id': 'Medium- tidak ada arahan',
-  },
-  labelDifficultyHard: {
-    'en': 'Expert - No Directions & Random Levels',
-    'id': 'Ahli - Tidak ada arahan & Tingkat permainan Acak',
-  }
+  // Removed Medium and Hard difficulty labels
 };

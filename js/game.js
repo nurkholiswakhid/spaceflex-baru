@@ -1,7 +1,7 @@
 var game = {
   colorblind: (localStorage.colorblind && JSON.parse(localStorage.colorblind)) || 'false',
   language: window.location.hash.substring(1) || 'en',
-  difficulty: 'easy',
+  difficulty: 'beginner', // Set default difficulty to beginner
   level: parseInt(localStorage.level, 10) || 0,
   answers: (localStorage.answers && JSON.parse(localStorage.answers)) || {},
   solved: (localStorage.solved && JSON.parse(localStorage.solved)) || [],
@@ -226,48 +226,10 @@ var game = {
       window.location.hash = $(this).val();
     });
 
-    $('#difficulty').on('change', function() {
-      game.difficulty = $('input:checked', '#difficulty').val();
-
-      // setting height will prevent a slight jump when the animation starts
-      var $instructions = $('#instructions');
-      var height = $instructions.height();
-      $instructions.css('height', height);
-
-      var $markers = $('.level-marker');
-
-      if (game.difficulty == 'hard' || game.difficulty == 'medium') {
-        $instructions.slideUp();
-
-        $markers.each(function() {
-          var $marker = $(this);
-          if ($marker[0].hasAttribute('title')) {
-            $marker.attr('data-title', $marker.attr('title'));
-            $marker.removeAttr('title');
-          }
-        });
-      } else {
-        $instructions.css('height', '').slideDown();
-
-        $markers.each(function() {
-          var $marker = $(this);
-          if ($marker[0].hasAttribute('data-title')) {
-            $marker.attr('title', $marker.attr('data-title'));
-            $marker.removeAttr('data-title');
-          }
-        });
-      }
-    });
-
-    $('#colorblind').on('change', function() {
-      game.colorblind = $('input:checked', '#colorblind').val();
-
-      if (game.colorblind == 'true') {
-        $('.lilypad, .frog').addClass('cb-friendly');
-      } else {
-        $('.lilypad, .frog').removeClass('cb-friendly');
-      }
-    });
+    // Remove the difficulty change handler
+    // $('#difficulty').on('change', function() {
+    //   game.difficulty = $('input:checked', '#difficulty').val();
+    // });
 
     $('body').on('click', function() {
       $('.tooltip').hide();
@@ -307,11 +269,8 @@ var game = {
   },
 
   next: function() {
-    if (this.difficulty === "hard") {
-      this.level = Math.floor(Math.random()* levels.length)
-    } else {
-      this.level++
-    }
+    // Only Beginner difficulty
+    this.level++;
 
     var levelData = levels[this.level];
     this.loadLevel(levelData);
