@@ -39,7 +39,89 @@ var game = {
     localStorage.setItem('timeLeft', game.timeLeft); // Save current timeLeft to localStorage
   },
 
-  // Function to reset the timer
+  // Function to show results using SweetAlert2
+  showResults: function() {
+    const playerName = localStorage.getItem('playerName');
+    const totalQuestions = levels.length;
+    const correctAnswers = this.solved.length;
+    const wrongAnswers = totalQuestions - correctAnswers;
+    const score = Math.round((correctAnswers / totalQuestions) * 100);
+    
+    const correctDetails = this.solved.join(', ') || 'None';
+    const wrongDetails = totalQuestions > 0 ? levels.map(level => level.name).filter(name => !this.solved.includes(name)).join(', ') : 'None';
+
+    Swal.fire({
+      title: 'Quiz Results',
+      html: `
+        <p><strong>Name:</strong> ${playerName}</p>
+        <p><strong>Score:</strong> ${score}/100</p>
+        <p><strong>Total Questions:</strong> ${totalQuestions}</p>
+        <p><strong>Correct Answers:</strong> ${correctAnswers}</p>
+        <p><strong>Wrong Answers:</strong> ${wrongAnswers}</p>
+        <p><strong>Correct Questions:</strong> ${correctDetails}</p>
+        <p><strong>Wrong Questions:</strong> ${wrongDetails}</p>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Reset',
+      cancelButtonText: 'Share',
+      preConfirm: (result) => {
+        if (result) {
+          this.resetGame();
+        }
+      }
+    }).then((result) => {
+      if (result.isDismissed) {
+        const shareText = `I scored ${score}/100 in the quiz! Check it out!`;
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+        window.open(whatsappUrl, '_blank');
+      }
+    });
+  },
+
+  // Function to reset the game
+  resetGame: function() {
+    this.resetTimer();
+    this.level = 0;
+    this.answers = {};
+    this.solved = [];
+    this.loadLevel(levels[0]);
+    localStorage.removeItem('playerName');
+    localStorage.removeItem('playerAbsence');
+    this.showInputPopup();
+  },
+
+  // Function to end the game
+  endGame: function() {
+    clearInterval(this.timer);
+    this.showResults(); // Show results when the game ends
+  },
+
+  // Function to set up event handlers
+  setHandlers: function() {
+    $('#next').on('click', function() {
+      $('#code').focus();
+
+      if ($(this).hasClass('disabled')) {
+        if (!$('.frog').hasClass('animated')) {
+          game.tryagain();
+        }
+        return;
+      }
+
+      $(this).removeClass('animated animation');
+      $('.frog').addClass('animated bounceOutUp');
+      $('.arrow, #next').addClass('disabled');
+
+      setTimeout(function() {
+        if (game.level >= levels.length - 1) {
+          $('#next').text('Selesai'); // Change button text to "Selesai"
+          game.endGame(); // Call endGame to show results
+        } else {
+          game.next();
+        }
+      }, 2000);
+    });
+  },
   resetTimer: function() {
     this.timerStarted = false;    // Reset the timer started flag
     clearInterval(game.timer);  // Stop the timer

@@ -271,6 +271,18 @@ var levels = [
     style: { 'flex-direction': 'column-reverse', 'flex-wrap': 'wrap-reverse', 'align-content': 'space-between', 'justify-content': 'center' },
     before: "#pond {\n  display: flex;\n",
     after: "}"
+  },
+  {
+    name: 'flex-grow 1',
+    instructions: {
+      'en': '<p>Sometimes the frogs need a little more space to reach their lilypads. Use the <code>flex-grow</code> property to allow the frogs to grow and fill the available space. This property accepts a unitless value that serves as a proportion of how much the item should grow compared to others.</p><p>For example, <code>flex-grow: 2;</code> will make an item grow twice as much as others with <code>flex-grow: 1;</code>.</p>',
+      'id': '<p>Terkadang katak membutuhkan sedikit lebih banyak ruang untuk mencapai lilypad mereka. Gunakan properti <code>flex-grow</code> untuk memungkinkan katak tumbuh dan mengisi ruang yang tersedia. Properti ini menerima nilai tanpa unit yang berfungsi sebagai proporsi seberapa besar item harus tumbuh dibandingkan dengan yang lain.</p><p>Misalnya, <code>flex-grow: 2;</code> akan membuat item tumbuh dua kali lebih besar dari yang lain dengan <code>flex-grow: 1;</code>.</p>',
+    },
+    board: 'gyr',
+    selector: '> :nth-child(2)',
+    style: { 'flex-grow': '2' },
+    before: "#pond {\n  display: flex;\n}\n\n.yellow {\n",
+    after: "}"
   }
 ];
 
@@ -286,3 +298,4 @@ var levelWin = {
   before: "#pond {\n  display: flex;\n",
   after: "}"
 };
+
