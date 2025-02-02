@@ -42,6 +42,7 @@ var game = {
   // Function to show results using SweetAlert2
   showResults: function() {
     const playerName = localStorage.getItem('playerName');
+    const playerAbsence = localStorage.getItem('playerAbsence');
     const totalQuestions = levels.length;
     const correctAnswers = this.solved.length;
     const wrongAnswers = totalQuestions - correctAnswers;
@@ -54,7 +55,7 @@ var game = {
       title: 'Quiz Results',
       html: `
         <p><strong>Name:</strong> ${playerName}</p>
-        <p><strong>Name:</strong> ${playerAbsence}</p>
+        <p><strong>Absence:</strong> ${playerAbsence}</p>
         <p><strong>Score:</strong> ${score}/100</p>
         <p><strong>Total Questions:</strong> ${totalQuestions}</p>
         <p><strong>Correct Answers:</strong> ${correctAnswers}</p>
