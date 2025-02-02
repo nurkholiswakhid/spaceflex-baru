@@ -46,7 +46,7 @@ var game = {
     const correctAnswers = this.solved.length;
     const wrongAnswers = totalQuestions - correctAnswers;
     const score = Math.round((correctAnswers / totalQuestions) * 100);
-    
+
     const correctDetails = this.solved.join(', ') || 'None';
     const wrongDetails = totalQuestions > 0 ? levels.map(level => level.name).filter(name => !this.solved.includes(name)).join(', ') : 'None';
 
@@ -54,6 +54,7 @@ var game = {
       title: 'Quiz Results',
       html: `
         <p><strong>Name:</strong> ${playerName}</p>
+        <p><strong>Name:</strong> ${playerAbsence}</p>
         <p><strong>Score:</strong> ${score}/100</p>
         <p><strong>Total Questions:</strong> ${totalQuestions}</p>
         <p><strong>Correct Answers:</strong> ${correctAnswers}</p>
@@ -71,9 +72,40 @@ var game = {
       }
     }).then((result) => {
       if (result.isDismissed) {
-        const shareText = `I scored ${score}/100 in the quiz! Check it out!`;
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-        window.open(whatsappUrl, '_blank');
+        // Data yang akan dikirim ke Google Spreadsheet
+        const quizData = {
+          playerName,
+          playerAbsence,
+          score,
+          totalQuestions,
+          correctAnswers,
+          wrongAnswers,
+          correctDetails,
+          wrongDetails
+        };
+
+        // Ganti URL dengan URL Web App Anda
+        const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbw7ntIrknsJnYupRTLR5M28-eTHLKapEiBlcQlIoCQSIr8q5mz_NVO5u49BfEpU5ks/exec';
+
+        // Kirim data ke Google Apps Script
+        fetch(googleScriptUrl, {
+          method: 'POST',
+          mode: 'no-cors', // Mode no-cors untuk menghindari CORS issues
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(quizData),
+        })
+          .then(() => {
+            // Setelah data dikirim, buka WhatsApp untuk berbagi hasil
+            const shareText = `I scored ${score}/100 in the quiz! Check it out!`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+            window.open(whatsappUrl, '_blank');
+          })
+          .catch((error) => {
+            console.error('Error saving data to Google Spreadsheet:', error);
+            Swal.fire('Error', 'Failed to save results. Please try again.', 'error');
+          });
       }
     });
   },
