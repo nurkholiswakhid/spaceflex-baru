@@ -20,7 +20,6 @@ var messages = {
     'en': 'Time Left:',
     'id': 'Waktu Tersisa:',
   },
-  //tes
 
   labelOf: {
     'en': 'of',
