@@ -32,7 +32,7 @@ body {
   display: flex;
   min-width: 600px;
   margin: 0;
-  background-color: #43A047;
+  background-color: #093E5F;
   color: rgba(255, 255, 255, 0.8);
   font-family: 'PT Sans', sans-serif;
 }
@@ -41,14 +41,14 @@ body {
   width: 50%;
   min-width: 300px;
   padding: 2em;
-  background-color: #43A047;
+  background-color: #093E5F;
   font-size: 15px;
 }
 
 .timerstyle {
   font-size: 1.2em;
   font-weight: bold;
-  color: #333;
+  color: #ddd;
   margin-bottom: 10px;
 }
 
@@ -72,7 +72,7 @@ pre {
 
 code {
   padding: 0 2px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #2989BE;
   font-family: 'Source Code Pro', monospace;
   font-weight: 900;
   color: rgba(255, 255, 255, 0.8);
@@ -522,7 +522,7 @@ button:not(.disabled):hover {
 #background {
   z-index: 10;
   border-radius: 0 0 0 10px;
-  background-color: #1F5768;
+  background-color: #2989BE;
 }
 
 #pond {
