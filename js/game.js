@@ -66,6 +66,10 @@ var game = {
       showCancelButton: true,
       confirmButtonText: 'Reset',
       cancelButtonText: 'Share',
+      customClass: {
+        confirmButton: 'swal2-krem-btn',
+        cancelButton: 'swal2-biru-btn'
+      },
       preConfirm: (result) => {
         if (result) {
           this.resetGame();
@@ -176,6 +180,10 @@ var game = {
             confirmButtonText: 'Start Game',
             focusConfirm: false,
             allowOutsideClick: false,
+            customClass: {
+                confirmButton: 'swal2-biru-btn'
+            },
+
             preConfirm: () => {
                 const playerName = document.getElementById('nameInput').value;
                 const playerAbsence = document.getElementById('absenceInput').value;
@@ -307,6 +315,10 @@ var game = {
           showCancelButton: true,
           confirmButtonText: 'Yes, Reset!',
           cancelButtonText: 'Cancel'
+      , customClass: {
+          confirmButton: 'swal2-krem-btn',
+          cancelButton: 'swal2-biru-btn'
+          }
       }).then((result) => {
           if (result.isConfirmed) {
             game.resetTimer();  // Reset the timer when the game is reset
