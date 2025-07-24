@@ -1,46 +1,60 @@
+// Objek utama game yang menyimpan semua data dan fungsi permainan
 var game = {
+  // Status mode buta warna
   colorblind: (localStorage.colorblind && JSON.parse(localStorage.colorblind)) || 'false',
+  // Bahasa yang digunakan
   language: window.location.hash.substring(1) || 'en',
+  // Tingkat kesulitan (default beginner)
   difficulty: 'beginner', // Set default difficulty to beginner
+  // Level saat ini
   level: parseInt(localStorage.level, 10) || 0,
+  // Jawaban yang sudah diisi
   answers: (localStorage.answers && JSON.parse(localStorage.answers)) || {},
+  // Level yang sudah diselesaikan
   solved: (localStorage.solved && JSON.parse(localStorage.solved)) || [],
+  // Status perubahan kode
   changed: false,
+  // Kode yang diklik pada tooltip
   clickedCode: null,
+  // Variabel timer
   timer: null,   // Timer variable
+  // Status apakah timer sudah dimulai
   timerStarted: false, // Flag to track if the timer has started
 
+  // Sisa waktu dalam detik (default 20 menit)
   timeLeft: localStorage.getItem('timeLeft') ? parseInt(localStorage.getItem('timeLeft'), 10) : 1200, // 20 minutes in seconds (1200 seconds)
 
-  // Function to start the timer
+  // Fungsi untuk memulai timer
   startTimer: function() {
-    if (this.timerStarted) return; // Prevent starting the timer again
-    this.timerStarted = true; // Set the flag to true
-    var timerDisplay = document.getElementById('timer'); // Timer display element
+    if (this.timerStarted) return; // Mencegah timer dimulai dua kali
+    this.timerStarted = true; // Set flag bahwa timer sudah dimulai
+    var timerDisplay = document.getElementById('timer'); // Elemen tampilan timer
 
+    // Interval untuk update timer setiap detik
     game.timer = setInterval(function() {
       if (game.timeLeft > 0) {
-        game.timeLeft--;
-        localStorage.setItem('timeLeft', game.timeLeft); // Save timeLeft to localStorage
+        game.timeLeft--; // Kurangi waktu
+        localStorage.setItem('timeLeft', game.timeLeft); // Simpan ke localStorage
         var minutes = Math.floor(game.timeLeft / 60);
         var seconds = game.timeLeft % 60;
-        timerDisplay.textContent = ` ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        timerDisplay.textContent = ` ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`; // Update tampilan timer
       } else {
-        clearInterval(game.timer);  // Stop the timer
-        alert("Time's up! Game over.");
-        game.endGame();  // End the game
+        clearInterval(game.timer);  // Hentikan timer
+        alert("Time's up! Game over."); // Tampilkan pesan waktu habis
+        game.endGame();  // Akhiri permainan
       }
-    }, 1000);  // Update every second
+    }, 1000);  // Update setiap detik
   },
 
-  // Function to stop the timer
+  // Fungsi untuk menghentikan timer
   stopTimer: function() {
-    clearInterval(game.timer);  // Stop the timer
-    localStorage.setItem('timeLeft', game.timeLeft); // Save current timeLeft to localStorage
+    clearInterval(game.timer);  // Hentikan timer
+    localStorage.setItem('timeLeft', game.timeLeft); // Simpan waktu terakhir ke localStorage
   },
 
-  // Function to show results using SweetAlert2
+  // Fungsi untuk menampilkan hasil menggunakan SweetAlert2
   showResults: function() {
+    // Ambil data pemain dan hitung skor
     const playerName = localStorage.getItem('playerName');
     const playerAbsence = localStorage.getItem('playerAbsence');
     const totalQuestions = levels.length;
@@ -48,9 +62,11 @@ var game = {
     const wrongAnswers = totalQuestions - correctAnswers;
     const score = Math.round((correctAnswers / totalQuestions) * 100);
 
+    // Detail soal benar dan salah
     const correctDetails = this.solved.join(', ') || 'None';
     const wrongDetails = totalQuestions > 0 ? levels.map(level => level.name).filter(name => !this.solved.includes(name)).join(', ') : 'None';
 
+    // Tampilkan hasil dengan SweetAlert2
     Swal.fire({
       title: 'Quiz Results',
       html: `
@@ -72,12 +88,12 @@ var game = {
       },
       preConfirm: (result) => {
         if (result) {
-          this.resetGame();
+          this.resetGame(); // Reset game jika tombol Reset ditekan
         }
       }
     }).then((result) => {
       if (result.isDismissed) {
-        // Data yang akan dikirim ke Google Spreadsheet
+        // Jika dibagikan, data dikirim ke Google Spreadsheet lalu buka WhatsApp
         const quizData = {
           playerName,
           playerAbsence,
@@ -89,7 +105,7 @@ var game = {
           wrongDetails
         };
 
-        // Ganti URL dengan URL Web App Anda
+        // URL Google Apps Script
         const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbw7ntIrknsJnYupRTLR5M28-eTHLKapEiBlcQlIoCQSIr8q5mz_NVO5u49BfEpU5ks/exec';
 
         // Kirim data ke Google Apps Script
@@ -115,62 +131,66 @@ var game = {
     });
   },
 
-  // Function to reset the game
+  // Fungsi untuk mereset permainan
   resetGame: function() {
-    this.resetTimer();
-    this.level = 0;
-    this.answers = {};
-    this.solved = [];
-    this.loadLevel(levels[0]);
-    localStorage.removeItem('playerName');
-    localStorage.removeItem('playerAbsence');
-    this.showInputPopup();
+    this.resetTimer(); // Reset timer
+    this.level = 0; // Kembali ke level awal
+    this.answers = {}; // Kosongkan jawaban
+    this.solved = []; // Kosongkan level yang sudah diselesaikan
+    this.loadLevel(levels[0]); // Load level pertama
+    localStorage.removeItem('playerName'); // Hapus nama dari localStorage
+    localStorage.removeItem('playerAbsence'); // Hapus absen dari localStorage
+    this.showInputPopup(); // Tampilkan popup input nama/absen
   },
 
-  // Function to end the game
+  // Fungsi untuk mengakhiri permainan
   endGame: function() {
-    clearInterval(this.timer);
-    this.showResults(); // Show results when the game ends
+    clearInterval(this.timer); // Hentikan timer
+    this.showResults(); // Tampilkan hasil saat game berakhir
   },
 
-  // Function to set up event handlers
+  // Fungsi untuk mengatur event handler
   setHandlers: function() {
+    // Event klik tombol Next
     $('#next').on('click', function() {
-      $('#code').focus();
+      $('#code').focus(); // Fokus ke input kode
 
       if ($(this).hasClass('disabled')) {
         if (!$('.frog').hasClass('animated')) {
-          game.tryagain();
+          game.tryagain(); // Animasi jika jawaban salah
         }
         return;
       }
 
-      $(this).removeClass('animated animation');
-      $('.frog').addClass('animated bounceOutUp');
-      $('.arrow, #next').addClass('disabled');
+      $(this).removeClass('animated animation'); // Hapus animasi
+      $('.frog').addClass('animated bounceOutUp'); // Animasi frog keluar
+      $('.arrow, #next').addClass('disabled'); // Disable tombol
 
       setTimeout(function() {
         if (game.level >= levels.length - 1) {
-          $('#next').text('Selesai'); // Change button text to "Selesai"
-          game.endGame(); // Call endGame to show results
+          $('#next').text('Selesai'); // Ubah teks tombol jadi "Selesai"
+          game.endGame(); // Akhiri game dan tampilkan hasil
         } else {
-          game.next();
+          game.next(); // Pindah ke level berikutnya
         }
       }, 2000);
     });
   },
+  // Fungsi untuk mereset timer ke awal
   resetTimer: function() {
-    this.timerStarted = false;    // Reset the timer started flag
-    clearInterval(game.timer);  // Stop the timer
-    game.timeLeft = 1200;        // Reset to 20 minutes
-    localStorage.removeItem('timeLeft'); // Clear timeLeft from localStorage
+    this.timerStarted = false;    // Reset flag timer
+    clearInterval(game.timer);  // Hentikan timer
+    game.timeLeft = 1200;        // Kembali ke 20 menit
+    localStorage.removeItem('timeLeft'); // Hapus waktu dari localStorage
   },
 
+  // Fungsi untuk menampilkan popup input nama dan absen
   showInputPopup: function() {
-    const savedName = localStorage.getItem('playerName');
-    const savedAbsence = localStorage.getItem('playerAbsence');
+    const savedName = localStorage.getItem('playerName'); // Ambil nama dari localStorage
+    const savedAbsence = localStorage.getItem('playerAbsence'); // Ambil absen dari localStorage
 
     if (!savedName || !savedAbsence) {
+        // Tampilkan popup input jika data belum ada
         Swal.fire({
             title: 'Welcome!',
             html: ` 
@@ -185,16 +205,17 @@ var game = {
             },
 
             preConfirm: () => {
+                // Validasi input nama dan absen
                 const playerName = document.getElementById('nameInput').value;
                 const playerAbsence = document.getElementById('absenceInput').value;
 
                 if (!playerName || !playerAbsence) {
-                    Swal.showValidationMessage('Both name and absence number are required!');
+                    Swal.showValidationMessage('Nama dan nomor absen wajib diisi!');
                     return false;
                 }
 
-                localStorage.setItem('playerName', playerName);
-                localStorage.setItem('playerAbsence', playerAbsence);
+                localStorage.setItem('playerName', playerName); // Simpan nama
+                localStorage.setItem('playerAbsence', playerAbsence); // Simpan absen
                 
                 // Refresh halaman setelah data disimpan
                 location.reload();
@@ -207,27 +228,30 @@ var game = {
             }
         });
     } else {
-        startGame();  // Start immediately if data exists
+        startGame();  // Langsung mulai jika data sudah ada
     }
 },
 
+  // Fungsi utama untuk memulai permainan
   start: function() {
-    const savedName = localStorage.getItem('playerName');
-    const savedAbsence = localStorage.getItem('playerAbsence');
+    const savedName = localStorage.getItem('playerName'); // Ambil nama
+    const savedAbsence = localStorage.getItem('playerAbsence'); // Ambil absen
 
     if (!savedName || !savedAbsence) {
-        game.showInputPopup(); // Prompt for input if data is missing
-        return; // Exit the function to prevent starting the timer
+        game.showInputPopup(); // Tampilkan popup input jika data belum ada
+        return; // Keluar agar timer tidak dimulai
     } else {
-        game.startTimer(); // Start the timer if both values exist
+        game.startTimer(); // Mulai timer jika data ada
     }
 
+    // Deteksi bahasa browser
     var requestLang = window.navigator.language.split('-')[0];
     if (window.location.hash === '' && requestLang !== 'en' && messages.languageActive.hasOwnProperty(requestLang)) {
       game.language = requestLang;
       window.location.hash = requestLang;
     }
 
+    // Inisialisasi tampilan dan event handler
     game.translate();
     $('#level-counter .total').text(levels.length);
     $('#editor').show();
@@ -235,16 +259,18 @@ var game = {
     $('#language').val(game.language);
     $('input[value="' + game.colorblind + '"]', '#colorblind').prop('checked', true);
 
-    this.setHandlers();
-    this.loadMenu();
-    game.loadLevel(levels[game.level]);
+    this.setHandlers(); // Atur event handler
+    this.loadMenu(); // Tampilkan menu level
+    game.loadLevel(levels[game.level]); // Load level saat ini
 
-    // Do not start the timer here, we will start it when the player clicks "Start Game"
+    // Timer dimulai saat klik "Start Game"
   },
 
   // Call this function when starting the game
 
+  // Fungsi untuk mengatur semua event handler (input, tombol, dll)
   setHandlers: function() {
+    // Event klik tombol Next
     $('#next').on('click', function() {
       $('#code').focus();
 
@@ -269,6 +295,7 @@ var game = {
       }, 2000);
     });
 
+    // Event input kode CSS
     $('#code').on('keydown', function(e) {
       if (e.keyCode === 13) {
 
@@ -297,17 +324,20 @@ var game = {
       }
     }).on('input', game.debounce(game.check, 500))
     .on('input', function() {
-      game.changed = true;
-      $('#next').removeClass('animated animation').addClass('disabled');
+      game.changed = true; // Tandai kode berubah
+      $('#next').removeClass('animated animation').addClass('disabled'); // Disable tombol Next
     });
 
+    // Event animasi selesai
     $('#editor').on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
       $(this).removeClass();
     });
+    // Event klik tombol Reset
     $('#labelReset').on('click', function() {
-      var warningReset = messages.warningReset[game.language] || messages.warningReset['en']; // Mengambil pesan berdasarkan bahasa aktif
+      var warningReset = messages.warningReset[game.language] || messages.warningReset['en']; // Pesan peringatan reset
     
       // Menampilkan SweetAlert2 sebagai pop-up
+      // Tampilkan popup konfirmasi reset
       Swal.fire({
           title: 'Warning',
           text: warningReset,
@@ -321,27 +351,28 @@ var game = {
           }
       }).then((result) => {
           if (result.isConfirmed) {
-            game.resetTimer();  // Reset the timer when the game is reset
-            game.timerStarted = false; // Reset the timer started flag
+            game.resetTimer();  // Reset timer
+            game.timerStarted = false; // Reset flag timer
 
-              game.level = 0;
-              game.answers = {};
-              game.solved = [];
-              game.loadLevel(levels[0]);
+              game.level = 0; // Kembali ke level awal
+              game.answers = {}; // Kosongkan jawaban
+              game.solved = []; // Kosongkan level selesai
+              game.loadLevel(levels[0]); // Load level pertama
     
-              // Menghapus data nama dan nomor absen dari localStorage
+              // Hapus data nama dan absen
               localStorage.removeItem('playerName');
               localStorage.removeItem('playerAbsence');
     
-              // Menampilkan pop-up untuk input nama dan nomor absen kembali
+              // Tampilkan popup input nama/absen
               game.showInputPopup();
     
-              // Menghapus status level yang sudah diselesaikan
+              // Hapus status level selesai di menu
               $('.level-marker').removeClass('solved');
           }
       });
     });
     
+    // Event klik tombol Settings
     $('#labelSettings').on('click', function() {
       $('#levelsWrapper').hide();
       $('#settings .tooltip').toggle();
@@ -349,6 +380,7 @@ var game = {
     });
     
 
+    // Event ganti bahasa
     $('#language').on('change', function() {
       window.location.hash = $(this).val();
     });
@@ -358,15 +390,18 @@ var game = {
     //   game.difficulty = $('input:checked', '#difficulty').val();
     // });
 
+    // Event klik di luar tooltip
     $('body').on('click', function() {
       $('.tooltip').hide();
       clickedCode = null;
     });
 
+    // Event klik pada tooltip dan toggle
     $('.tooltip, .toggle, #level-indicator').on('click', function(e) {
       e.stopPropagation();
     });
 
+    // Event sebelum halaman ditutup (simpan data)
     $(window).on('beforeunload', function() {
       game.saveAnswer();
       localStorage.setItem('level', game.level);
@@ -388,6 +423,7 @@ var game = {
     });
   },
 
+  // Fungsi untuk pindah ke level sebelumnya
   prev: function() {
     this.level--;
 
@@ -395,6 +431,7 @@ var game = {
     this.loadLevel(levelData);
   },
 
+  // Fungsi untuk pindah ke level berikutnya
   next: function() {
     // Only Beginner difficulty
     this.level++;
@@ -403,7 +440,9 @@ var game = {
     this.loadLevel(levelData);
   },
 
+  // Fungsi untuk menampilkan menu level
   loadMenu: function() {
+    // Buat marker untuk setiap level
     levels.forEach(function(level, i) {
       var levelMarker = $('<span/>').addClass('level-marker').attr({'data-level': i, 'title': level.name}).text(i+1);
 
@@ -414,6 +453,7 @@ var game = {
       levelMarker.appendTo('#levels');
     });
 
+    // Event klik marker level
     $('.level-marker').on('click', function() {
       game.saveAnswer();
 
@@ -422,12 +462,14 @@ var game = {
       game.loadLevel(levels[level]);
     });
 
+    // Event klik indikator level
     $('#level-indicator').on('click', function() {
       $('#settings .tooltip').hide();
       $('#levelsWrapper').toggle();
       $('#instructions .tooltip').remove();
     });
 
+    // Event klik panah kiri
     $('.arrow.left').on('click', function() {
       if ($(this).hasClass('disabled')) {
         return;
@@ -437,6 +479,7 @@ var game = {
       game.prev();
     });
 
+    // Event klik panah kanan
     $('.arrow.right').on('click', function() {
       if ($(this).hasClass('disabled')) {
         return;
@@ -447,6 +490,7 @@ var game = {
     });
   },
 
+  // Fungsi untuk menampilkan level tertentu
   loadLevel: function(level) {
     $('#editor').show();
     $('#share').hide();
@@ -481,12 +525,14 @@ var game = {
 
     var string = level.board;
     var markup = '';
+    // Mapping warna frog dan lilypad
     var colors = {
       'g': 'green',
       'r': 'red',
       'y': 'yellow'
     };
 
+    // Buat elemen lilypad dan frog sesuai board
     for (var i = 0; i < string.length; i++) {
       var c = string.charAt(i);
       var color = colors[c];
@@ -494,7 +540,9 @@ var game = {
       var lilypad = $('<div/>').addClass('lilypad ' + color + (this.colorblind == 'true' ? ' cb-friendly' : '')).data('color', color);
       var frog = $('<div/>').addClass('frog ' + color + (this.colorblind == 'true' ? ' cb-friendly' : '')).data('color', color);
 
-      $('<div/>').addClass('bg').css(game.transform()).appendTo(lilypad);
+      // Lilypad tidak diberi efek rotasi dan scale
+      $('<div/>').addClass('bg').appendTo(lilypad);
+      // Frog tetap diberi efek animasi
       $('<div/>').addClass('bg animated pulse infinite').appendTo(frog);
 
       $('#background').append(lilypad);
@@ -503,21 +551,25 @@ var game = {
 
     var classes = level.classes;
 
+    // Tambahkan class khusus jika ada
     if (classes) {
       for (var rule in classes) {
         $(rule).addClass(classes[rule]);
       }
     }
 
+    // Terapkan style pada background
     var selector = level.selector || '';
     $('#background ' + selector).css(level.style);
 
-    game.changed = false;
-    game.applyStyles();
-    game.check();
+    game.changed = false; // Reset status perubahan
+    game.applyStyles(); // Terapkan style ke pond
+    game.check(); // Cek jawaban
   },
 
+  // Fungsi untuk menampilkan tooltip bantuan CSS
   loadDocs: function() {
+    // Event klik pada kode properti CSS
     $('#instructions code').each(function() {
       var code = $(this);
       var text = code.text();
@@ -553,13 +605,14 @@ var game = {
             return pValue;
           };
 
+          // Event klik pada value di tooltip
           $('#instructions .tooltip code').on('click', function(event) {
             var pName = text;
             var pValue = event.target.textContent.split(' ')[0];
             pValue = getDefaultPropVal(pValue);
-            game.writeCSS(pName, pValue);
+            game.writeCSS(pName, pValue); // Tulis kode CSS otomatis
 
-            game.check();
+            game.check(); // Cek jawaban
           });
           clickedCode = code;
         });
@@ -567,35 +620,39 @@ var game = {
     });
   },
 
+  // Fungsi untuk menerapkan style CSS ke pond
   applyStyles: function() {
     var level = levels[game.level];
     var code = $('#code').val();
     var selector = level.selector || '';
     $('#pond ' +  selector).attr('style', code);
-    game.saveAnswer();
+    game.saveAnswer(); // Simpan jawaban
   },
 
+  // Fungsi untuk mengecek jawaban
   check: async function() {
     if (!document.startViewTransition) {
-      game.applyStyles();
-      game.compare();
+      game.applyStyles(); // Terapkan style
+      game.compare(); // Bandingkan posisi frog dan lilypad
       return;
     }
 
+    // Animasi transisi jika didukung browser
     const transition = document.startViewTransition(() => game.applyStyles());
 
     try {
       await transition.finished;
     } finally {
-      game.compare();
+      game.compare(); // Bandingkan posisi frog dan lilypad
     }
   },
 
+  // Fungsi untuk membandingkan posisi frog dan lilypad
   compare: function() {
     var level = levels[game.level];
     var lilypads = {};
     var frogs = {};
-    var correct = true;
+    var correct = true; // Status jawaban benar
 
     $('.frog').each(function() {
       var position = $(this).position();
@@ -621,6 +678,7 @@ var game = {
     });
 
     if (correct) {
+      // Jika benar, tandai level selesai dan aktifkan tombol Next
       if ($.inArray(level.name, game.solved) === -1) {
         game.solved.push(level.name);
       }
@@ -628,47 +686,54 @@ var game = {
       $('[data-level=' + game.level + ']').addClass('solved');
       $('#next').removeClass('disabled').addClass('animated animation');
     } else {
+      // Jika salah, disable tombol Next
       game.changed = true;
       $('#next').removeClass('animated animation').addClass('disabled');
     }
   },
 
+  // Fungsi untuk menyimpan jawaban ke objek game
   saveAnswer: function() {
     var level = levels[this.level];
     game.answers[level.name] = $('#code').val();
   },
 
+  // Fungsi animasi shake jika jawaban salah
   tryagain: function() {
     $('#editor').addClass('animated shake');
   },
 
+  // Fungsi untuk menampilkan level kemenangan
   win: function() {
     var solution = $('#code').val();
 
-    this.loadLevel(levelWin);
+    this.loadLevel(levelWin); // Load level kemenangan
 
-    $('#editor').hide();
-    $('#code').val(solution);
-    $('#share').show();
-    $('.frog .bg').removeClass('pulse').addClass('bounce');
+    $('#editor').hide(); // Sembunyikan editor
+    $('#code').val(solution); // Tampilkan solusi
+    $('#share').show(); // Tampilkan tombol share
+    $('.frog .bg').removeClass('pulse').addClass('bounce'); // Animasi frog menang
   },
 
+  // Fungsi untuk memberi efek acak pada frog/lilypad
   transform: function() {
     var scale = 1 + ((Math.random() / 5) - 0.2);
     var rotate = 360 * Math.random();
 
-    return {'transform': 'scale(' + scale + ') rotate(' + rotate + 'deg)'};
+    return {'transform': 'scale(' + scale + ') rotate(' + rotate + 'deg)'}; // Kembalikan style transform
   },
 
+  // Fungsi untuk mengatur terjemahan bahasa
   translate: function() {
-    document.title = messages.title[game.language] || messages.title.en;
-    $('html').attr('lang', game.language);
+    document.title = messages.title[game.language] || messages.title.en; // Judul halaman
+    $('html').attr('lang', game.language); // Set atribut bahasa
 
     var level = $('#editor').is(':visible') ? levels[game.level] : levelWin;
     var instructions = level.instructions[game.language] || level.instructions.en;
-    $('#instructions').html(instructions);
-    game.loadDocs();
+    $('#instructions').html(instructions); // Tampilkan instruksi
+    game.loadDocs(); // Tampilkan tooltip bantuan
 
+    // Terjemahkan label
     $('.translate').each(function() {
       var label = $(this).attr('id');
       if (messages[label]) {
@@ -679,30 +744,33 @@ var game = {
     });
   },
 
+  // Fungsi debounce untuk menunda eksekusi agar tidak terlalu sering
   debounce: function(func, wait, immediate) {
     var timeout;
     return function() {
       var context = this, args = arguments;
       var later = function() {
         timeout = null;
-        if (!immediate) func.apply(context, args);
+        if (!immediate) func.apply(context, args); // Eksekusi fungsi jika tidak immediate
       };
       var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) func.apply(context, args);
+      clearTimeout(timeout); // Hapus timeout sebelumnya
+      timeout = setTimeout(later, wait); // Set timeout baru
+      if (callNow) func.apply(context, args); // Eksekusi langsung jika immediate
     };
   },
 
+  // Fungsi untuk menulis kode CSS ke editor
   writeCSS: function(pName, pValue){
-    var tokens = $('#code').val().trim().split(/[\n:;]+/).filter(i => i);
-    var keywords = Object.keys(docs);
+    var tokens = $('#code').val().trim().split(/[\n:;]+/).filter(i => i); // Pisahkan kode CSS
+    var keywords = Object.keys(docs); // Daftar properti CSS
     var content = '';
     var filled = false;
 
-    // Do nothing when click property name inside Tooltip
+    // Jika klik nama properti di tooltip, tidak melakukan apa-apa
     if (keywords.includes(pValue)) return;
 
+    // Proses penulisan kode CSS ke editor
     tokens.forEach(function (token, i){
       var trimmedToken = token.trim();
       if (!keywords.includes(trimmedToken)){
@@ -713,10 +781,10 @@ var game = {
       if (trimmedToken === pName && !filled)
       {
         filled = true;
-        append += trimmedToken + ': ' + pValue + ';';
+        append += trimmedToken + ': ' + pValue + ';'; // Tambahkan properti dan value
       }
       else if (i + 1 < tokens.length){
-        var val = !keywords.includes(tokens[i + 1].trim()) ? tokens[i + 1].trim() : ''; // TODO: Maybe prop value validiation required
+        var val = !keywords.includes(tokens[i + 1].trim()) ? tokens[i + 1].trim() : ''; // Validasi value
         append += trimmedToken + ': ' + val + ';';
       }
 
@@ -725,16 +793,18 @@ var game = {
 
     if (!filled){
       content += content !== '' ? '\n' : '';
-      content += pName + ': ' + pValue + ';';
+      content += pName + ': ' + pValue + ';'; // Tambahkan properti baru jika belum ada
     }
 
-    $('#code').val(content);
-    $('#code').focus();
+    $('#code').val(content); // Tulis ke editor
+    $('#code').focus(); // Fokus ke editor
   }
 };
 
+// Inisialisasi game saat dokumen siap
 $(document).ready(function() {
   game.start();
 });
 
+// Tampilkan popup input nama/absen saat pertama kali
 game.showInputPopup();
