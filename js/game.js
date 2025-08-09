@@ -840,7 +840,7 @@ generateProgressDots: function () {
     document.title = messages.title[this.language] || messages.title.en;
     $('html').attr('lang', this.language);
 
-    const level = $('#editor').is(':visible') ? levels[this.level] : levelWin;
+    const level = levels[this.level];
     const instructions = level.instructions[this.language] || level.instructions.en;
     $('#instructions').html(instructions);
     
@@ -853,7 +853,8 @@ generateProgressDots: function () {
         $('#' + label).text(text);
       }
     });
-  },
+},
+
 
   /**
    * Debounce function to limit execution frequency
