@@ -740,17 +740,7 @@ generateProgressDots: function () {
     $('#editor').addClass('animated shake');
   },
 
-  /**
-   * Show win screen
-   */
-  win: function() {
-    const solution = $('#code').val();
-    this.loadLevel(levelWin);
-    $('#editor').hide();
-    $('#code').val(solution);
-    $('#share').show();
-    $('.frog .bg').removeClass('pulse').addClass('bounce');
-  },
+
 
   // ===========================================
   // UTILITY METHODS
