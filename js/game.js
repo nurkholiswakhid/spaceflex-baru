@@ -205,47 +205,59 @@ var game = {
   /**
    * Show game results with SweetAlert2
    */
-  showResults: function() {
-    const playerName = localStorage.getItem('playerName');
-    const playerAbsence = localStorage.getItem('playerAbsence');
+  showResults: function () {
+    const playerName = localStorage.getItem('playerName') || 'Unknown';
+    const playerAbsence = localStorage.getItem('playerAbsence') || '-';
     const totalQuestions = levels.length;
     const correctAnswers = this.solved.length;
     const wrongAnswers = totalQuestions - correctAnswers;
     const score = Math.round((correctAnswers / totalQuestions) * 100);
 
-    const correctDetails = this.solved.join(', ') || 'None';
-    const wrongDetails = totalQuestions > 0 ? 
-      levels.map(level => level.name).filter(name => !this.solved.includes(name)).join(', ') : 'None';
+    const correctDetails = this.solved.length > 0
+        ? `<ul style="text-align:left;">${this.solved.map(q => `<li>✅ ${q}</li>`).join('')}</ul>`
+        : '<em>None</em>';
+
+    const wrongDetails = totalQuestions > 0
+        ? `<ul style="text-align:left;">${levels.map(level => level.name).filter(name => !this.solved.includes(name)).map(q => `<li>❌ ${q}</li>`).join('')}</ul>`
+        : '<em>None</em>';
 
     Swal.fire({
-      title: 'Quiz Results',
-      html: `
-        <p><strong>Name:</strong> ${playerName}</p>
-        <p><strong>Absence:</strong> ${playerAbsence}</p>
-        <p><strong>Score:</strong> ${score}/100</p>
-        <p><strong>Total Questions:</strong> ${totalQuestions}</p>
-        <p><strong>Correct Answers:</strong> ${correctAnswers}</p>
-        <p><strong>Wrong Answers:</strong> ${wrongAnswers}</p>
-        <p><strong>Correct Questions:</strong> ${correctDetails}</p>
-        <p><strong>Wrong Questions:</strong> ${wrongDetails}</p>
-      `,
-      showCancelButton: true,
-      confirmButtonText: 'Reset',
-      cancelButtonText: 'Share',
-      customClass: {
-        confirmButton: 'swal2-krem-btn',
-        cancelButton: 'swal2-biru-btn'
-      },
-      preConfirm: () => this.resetGame()
+        title: '📊 Quiz Results',
+        html: `
+            <table style="width:100%; text-align:left; border-collapse: collapse;">
+                <tr><td><strong>👤 Name:</strong></td><td>${playerName}</td></tr>
+                <tr><td><strong>🆔 Absence:</strong></td><td>${playerAbsence}</td></tr>
+                <tr><td><strong>🏆 Score:</strong></td><td>${score} / 100</td></tr>
+                <tr><td><strong>❓ Total Questions:</strong></td><td>${totalQuestions}</td></tr>
+                <tr><td><strong>✅ Correct:</strong></td><td style="color:green;">${correctAnswers}</td></tr>
+                <tr><td><strong>❌ Wrong:</strong></td><td style="color:red;">${wrongAnswers}</td></tr>
+            </table>
+            <hr>
+            <h4>✅ Correct Questions</h4>
+            ${correctDetails}
+            <h4>❌ Wrong Questions</h4>
+            ${wrongDetails}
+        `,
+        showCancelButton: true,
+        confirmButtonText: '🔄 Reset',
+        cancelButtonText: '📤 Share',
+        customClass: {
+            confirmButton: 'swal2-krem-btn',
+            cancelButton: 'swal2-biru-btn'
+        },
+        preConfirm: () => this.resetGame()
     }).then((result) => {
-      if (result.isDismissed) {
-        this.shareResults({
-          playerName, playerAbsence, score, totalQuestions,
-          correctAnswers, wrongAnswers, correctDetails, wrongDetails
-        });
-      }
+        if (result.isDismissed) {
+            this.shareResults({
+                playerName, playerAbsence, score, totalQuestions,
+                correctAnswers, wrongAnswers,
+                correctDetails: this.solved.join(', ') || 'None',
+                wrongDetails: levels.map(level => level.name).filter(name => !this.solved.includes(name)).join(', ') || 'None'
+            });
+        }
     });
-  },
+},
+
 
  /**
  * Generate progress dots with numbers and sync with level navigation
