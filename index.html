@@ -12,31 +12,7 @@
     <link href='https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
-<script>
-(function() {
-    const fixedTitle = "Spaceflex - Master CSS Flexbox in Space";
-    document.title = fixedTitle;
 
-    // Mencegah script lain mengubah judul
-    Object.defineProperty(document, 'title', {
-        set: function() {
-            document.title = fixedTitle;
-        },
-        get: function() {
-            return fixedTitle;
-        },
-        configurable: true
-    });
-
-    // Cek terus kalau ada perubahan dari luar
-    const observer = new MutationObserver(() => {
-        if (document.title !== fixedTitle) {
-            document.title = fixedTitle;
-        }
-    });
-    observer.observe(document.querySelector('title'), { childList: true });
-})();
-</script>
     
 </head>
 <body>
