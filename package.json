@@ -1,7 +1,7 @@
 {
-  "name": "flexboxfroggy",
+  "name": "spaceflex",
   "version": "1.0.0",
-  "description": "A game for learning CSS flexbox",
+  "description": "Master CSS Flexbox in Space",
   "main": "game.js",
   "dependencies": {
     "animate.css": "^3.4.0",

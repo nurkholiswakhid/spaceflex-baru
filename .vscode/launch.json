@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Nurkholis/Downloads/flexboxfroggy-gh-pages",
-      "program": "c:/Users/Nurkholis/Downloads/flexboxfroggy-gh-pages/build/Debug/outDebug",
+      "cwd": "c:/Users/Nurkholis/Downloads/spaceflex",
+      "program": "c:/Users/Nurkholis/Downloads/spaceflex/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
