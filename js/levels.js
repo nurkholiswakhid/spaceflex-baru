@@ -286,5 +286,17 @@ var levels = [
   }
 ];
 
+var levelWin = {
+  name: 'win',
+  instructions: {
+    'en': '<p>You win! Thanks to your mastery of flexbox, you were able to help all of the frogs to their lilypads. Just look how hoppy they are!</p><p>If you found this ribbeting, be sure to visit <a href="https://codepip.com/games/grid-garden/">Grid Garden</a> to learn about another powerful new feature of CSS layout. You can also find other coding games over at <a href="https://codepip.com/">Codepip</a>. And be sure to share Flexbox Froggy with your friends!</p>',
+    'id': '<p> Kamu menang! Berkat penguasaan flexbox kamu, kamu dapat membantu semua Froggy untuk lilypads mereka. Lihat betapa "bahagia" mereka!</p><p>Jika kamu menemukan ini menyenangkan, pastikan untuk mengunjungi <a href="https://codepip.com/games/grid-garden/">Grid Garden</a> untuk mempelajari hal penting CSS layout. Kamu juga bisa menemukan permainan coding di <a href="https://codepip.com/">Codepip</a>.</p><p>Ingin tetap bermain sambil mendukunng Flexbox Froggy tetap ada? Cobalah kursus desain dan pengkodean web terbaik yang ditawarkan oleh <a href="https://treehouse.7eer.net/c/371033/228915/3944?subId1=flexboxfroggy">Treehouse</a>. Dan jangan lupa bagikan Flexbox Froggy kepada teman-teman kamu!</p>',
+  },
+  board: 'gyrgyrgyrgyrgyrgyrgyrgyrg',
+  classes: { '#pond, #background': 'wrap' },
+  style: {},
+  before: "#pond {\n  display: flex;\n",
+  after: "}"
+};
 
 
