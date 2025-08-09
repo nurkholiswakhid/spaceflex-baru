@@ -26,8 +26,8 @@ var messages = {
     'id': 'dari',
   },
   title: {
-    'en': 'Flexbox Froggy - A game for learning CSS flexbox',
-    'id': 'Flexbox Froggy - Sebuah permainan untuk belajar CSS flexbox',
+    'en': 'Spaceflex - Master CSS Flexbox in Space',
+    'id': 'Spaceflex - Master CSS Flexbox in Space',
   },
   labelReset: {
     'en': 'Reset',
