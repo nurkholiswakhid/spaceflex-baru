@@ -138,7 +138,10 @@ body {
 .main-title {
     font-size: 2.8rem;
     font-weight: 900;
-    background: linear-gradient(135deg, var(--cosmic-blue), var(--space-purple));
+    background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+    background-size: 300% 300%; /* penting untuk animasi gradasi */
+    animation: gradientShift 4s ease-in-out infinite;
+    -webkit-background-clip: text; /* agar di browser berbasis WebKit bisa */
     background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
@@ -148,6 +151,10 @@ body {
     position: relative;
 }
 
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
 
 
 .subtitle {

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Spaceflex - Master CSS Flexbox in Space</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="spaceflex is an interactive game designed to teach CSS Flexbox concepts through engaging space-themed missions.">
+    <meta name="keywords" content="CSS, spaceflex, game, interactive, learning, space, web development, educational">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">    
+    <link href='https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+
+</head>
+<body>
+    <!-- Animated space background -->
+    <div class="space-background"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="header">
+                <div class="title-section">
+                    <h1 class="title">
+                        <span class="main-title">Spaceflex</span>
+                        <p class="subtitle"> A Game for Learning CSS Flexbox</p>
+                    </h1>
+                    
+                    <div class="timer-display">
+                        <div class="timer-label">Mission Time</div>
+                        <div class="timer-value" id="timer">20:00</div>
+                    </div>
+                </div>
+
+                <div class="level-nav">
+                    <button class="nav-button arrow left" id="prevBtn">‹</button>
+                    <div class="level-indicator" id="level-indicator">
+                        <div class="level-text">Mission <span class="current">1</span> of <span class="total">25</span></div>
+                    </div>
+                    <button class="nav-button arrow right" id="nextBtn">›</button>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-grid" id="progressGrid">
+                        <!-- Progress dots will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="instructions-section">
+                <div class="instructions fade-in" id="instructions">welcome   </div>
+
+
+                <div class="editor-section">
+                    <div class="editor-header">
+                        <div class="editor-dot"></div>
+                        <div class="editor-dot"></div>
+                        <div class="editor-dot"></div>
+                        <div class="editor-title">space-dock.css</div>
+                    </div>
+                    <div class="editor-content" style="position: relative;">
+                       <pre id="before"></pre>
+                        <textarea id="code" autofocus autocapitalize="none" spellcheck="false"></textarea>
+                        <pre id="after"></pre>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" id="next">Launch Next Mission</button>
+                <button class="btn btn-secondary" id="labelReset">Reset</button>
+            </div>
+        </div>
+
+        <!-- Right Panel: Interactive Game Area for Visualizing CSS Solutions (Space Dock) -->
+        <section class="game-panel" id="game-panel">
+            <!-- Main game board container -->
+            <div class="game-board" id="board">
+                <!-- Pond: area where flex items (spaceships, etc.) are displayed -->
+                <div class="pond" id="pond"></div>
+                <!-- Background: decorative or contextual background for the game area -->
+                <div class="background" id="background"></div>
+            </div>
+        </section>
+    </div>
+
+   
+      
+
+    
+
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/docs.js"></script>
+    <script src="js/messages.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
