@@ -238,9 +238,11 @@ var game = {
             <h4>❌ Wrong Questions</h4>
             ${wrongDetails}
         `,
-        showCancelButton: true,
-        confirmButtonText: '🔄 Reset',
-        cancelButtonText: '📤 Share',
+        showCancelButton: false,
+        focusConfirm: false,
+        allowOutsideClick: false,
+        confirmButtonText: 'Reset',
+        cancelButtonText: 'Share',
         customClass: {
             confirmButton: 'swal2-krem-btn',
             cancelButton: 'swal2-biru-btn'
@@ -380,7 +382,6 @@ generateProgressDots: function () {
 
     // Level indicator click
     $('#level-indicator').on('click', function() {
-      $('#settings .tooltip').hide();
       $('#levelsWrapper').toggle();
       $('#instructions .tooltip').remove();
       
@@ -570,7 +571,6 @@ generateProgressDots: function () {
     // Settings button
     $('#labelSettings').on('click', function() {
       $('#levelsWrapper').hide();
-      $('#settings .tooltip').toggle();
       $('#instructions .tooltip').remove();
     });
 
@@ -585,9 +585,7 @@ generateProgressDots: function () {
       clickedCode = null;
     });
 
-    $('.tooltip, .toggle, #level-indicator').on('click', function(e) {
-      e.stopPropagation();
-    });
+   
   },
 
   /**
@@ -749,47 +747,58 @@ generateProgressDots: function () {
   /**
    * Load CSS documentation tooltips
    */
-  loadDocs: function() {
-    $('#instructions code').each(function() {
-      const code = $(this);
-      const text = code.text();
+loadDocs: function () {
+  $('#instructions code').each(function () {
+    const code = $(this);
+    const text = code.text();
 
-      if (text in docs) {
-        code.addClass('help');
-        code.on('click', function(e) {
-          e.stopPropagation();
+    if (text in docs) {
+      code.addClass('help');
 
-          if ($('#instructions .tooltip').length !== 0 && clickedCode === code) {
-            $('#instructions .tooltip').remove();
-            return;
-          }
+      code.on('click', function (e) {
+        e.stopPropagation();
 
-          $('#levelsWrapper').hide();
-          $('#settings .tooltip').hide();
-          $('#instructions .tooltip').remove();
+        if ($('.tooltip').length !== 0 && clickedCode === code) {
+          $('.tooltip').remove();
+          return;
+        }
 
-          const html = docs[text][game.language] || docs[text].en;
-          const tooltipX = code.offset().left;
-          const tooltipY = code.offset().top + code.height() + 13;
+        $('#levelsWrapper').hide();
+        $('.tooltip').remove();
 
-          $('<div class="tooltip"></div>').html(html).css({
-            top: tooltipY,
-            left: tooltipX
-          }).appendTo($('#instructions'));
+        const html = docs[text][game.language] || docs[text].en;
 
-          $('#instructions .tooltip code').on('click', function(event) {
-            const pName = text;
-            let pValue = event.target.textContent.split(' ')[0];
-            pValue = game.getDefaultPropVal(pValue);
-            game.writeCSS(pName, pValue);
-            game.check();
-          });
+        // Ambil posisi elemen <code> di layar
+        const offset = code.offset();
+        const tooltipX = offset.left;
+        const tooltipY = offset.top + code.outerHeight() + 10;
 
-          clickedCode = code;
+        // Append ke body supaya tidak terbatasi container
+        $('<div class="tooltip"></div>')
+          .html(html)
+          .css({
+            top: tooltipY + 'px',
+            left: tooltipX + 'px',
+            position: 'absolute'
+          })
+          .appendTo('body');
+
+        $('.tooltip code').on('click', function (event) {
+          const pName = text;
+          let pValue = event.target.textContent.split(' ')[0];
+          pValue = game.getDefaultPropVal(pValue);
+          game.writeCSS(pName, pValue);
+          game.check();
         });
-      }
-    });
-  },
+
+        clickedCode = code;
+      });
+    }
+  });
+},
+
+
+
 
   /**
    * Get default property value
