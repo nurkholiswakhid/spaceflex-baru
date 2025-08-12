@@ -92,12 +92,37 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 1.8rem;
             font-weight: 900;
+
+            /* Gradient awal */
             background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
-            background-clip: text;
+            background-size: 300% 300%; /* penting untuk animasi */
+            
+            /* Animasi gradien */
+            animation: gradientShift 4s ease-in-out infinite;
+
+            /* Clip teks */
             -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             -webkit-text-fill-color: transparent;
+
+            /* Efek cahaya */
             text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
         }
+
+        /* Definisi animasi */
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
         
         .nav-menu {
             display: flex;
@@ -343,28 +368,149 @@
         .planet {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #ff6b6b, #4ecdc4, #45b7d1);
+            background-size: cover;
+            background-position: center;
             animation: rotate 20s linear infinite;
             opacity: 0.7;
         }
-        
+
         .planet-1 {
             width: 100px;
             height: 100px;
+            background-image: url('../images/planet-merah.svg');
             top: 20%;
             right: 10%;
             animation-delay: 0s;
         }
-        
+
         .planet-2 {
             width: 60px;
             height: 60px;
+            background-image: url('../images/planet-kuning.svg');
             bottom: 30%;
             left: 5%;
             animation-delay: -10s;
         }
-        
+
+        .planet-3 {
+            width: 80px;
+            height: 80px;
+            background-image: url('../images/planet-hijau.svg');
+            top: 50%;
+            left: 15%;
+            animation-delay: -5s;
+        }
+
+        .planet-4 {
+            width: 50px;
+            height: 50px;
+            background-image: url('../images/planet-merah.svg');
+            bottom: 10%;
+            right: 20%;
+            animation-delay: -15s;
+        }
+
+        .planet-5 {
+            width: 120px;
+            height: 120px;
+            background-image: url('../images/planet-kuning.svg');
+            top: 5%;
+            left: 35%;
+            animation-delay: -8s;
+        }
+
+        .planet-6 {
+            width: 70px;
+            height: 70px;
+            background-image: url('../images/planet-hijau.svg');
+            bottom: 45%;
+            right: 40%;
+            animation-delay: -12s;
+        }
+
         @keyframes rotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Alien Ship Decoration */
+        .alien {
+            position: absolute;
+            background-size: cover;
+            background-position: center;
+            animation: float 10s ease-in-out infinite;
+            opacity: 0.9;
+        }
+
+        /* Ukuran & gambar untuk setiap pesawat */
+        .alien-1 {
+            width: 80px;
+            height: 50px;
+            background-image: url('../images/alien-hijau.svg');
+        }
+        .alien-2 {
+            width: 70px;
+            height: 45px;
+            background-image: url('../images/alien-kuning.svg');
+        }
+        .alien-3 {
+            width: 90px;
+            height: 55px;
+            background-image: url('../images/alien-merah.svg');
+        }
+        .alien-4 {
+            width: 75px;
+            height: 50px;
+            background-image: url('../images/alien-hijau.svg');
+        }
+        .alien-5 {
+            width: 85px;
+            height: 48px;
+            background-image: url('../images/alien-kuning.svg');
+        }
+        .alien-6 {
+            width: 78px;
+            height: 52px;
+            background-image: url('../images/alien-merah.svg');   
+        }
+
+        /* Animasi melayang */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+
+        /* ==========================================================================
+   SPACE BACKGROUND ANIMATION
+   ========================================================================== */
+
+.space-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+    overflow: hidden;
+    
+    /* Background */
+    background: radial-gradient(circle at 20% 20%, var(--primary-bg), #050716);
+}
+
+.space-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    opacity: 0.4;
+    
+    /* Background pattern */
+    background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+    
+    /* Animation */
+    animation: starMove 60s linear infinite;
+}

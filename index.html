@@ -6,12 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="spaceflex is an interactive game designed to teach CSS Flexbox concepts through engaging space-themed missions.">
     <meta name="keywords" content="CSS, spaceflex, game, interactive, learning, space, web development, educational">
+    <meta name="google-site-verification" content="A9WBS6aNG0-CSjrqtE5rf11P8IoFMRqsUrgb4R7w7zU" />
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/index.css">    
 
 
 </head>
 <body>
+    <div class="space-background"></div>
+
     <!-- Starfield -->
     <div class="stars" id="stars"></div>
     
@@ -21,6 +24,17 @@
     <!-- Planet decorations -->
     <div class="planet planet-1"></div>
     <div class="planet planet-2"></div>
+    <div class="planet planet-3"></div>
+    <div class="planet planet-4"></div>
+    <div class="planet planet-5"></div>
+    <div class="planet planet-6"></div>
+    <div class="alien alien-1"></div>
+    <div class="alien alien-2"></div>
+    <div class="alien alien-3"></div>
+    <div class="alien alien-4"></div>
+    <div class="alien alien-5"></div>
+    <div class="alien alien-6"></div>
+
     
     <!-- Navigation -->
     <nav>
@@ -91,11 +105,11 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 StarVoyager. Semua hak dilindungi. Siap untuk petualangan luar angkasa?</p>
+            <p>&copy; 2025 Spaceflex. Semua hak dilindungi. Siap untuk petualangan luar angkasa?</p>
         </div>
     </footer>
-    
     <script>
+
         // Generate starfield
         function createStarfield() {
             const starsContainer = document.getElementById('stars');
@@ -175,6 +189,49 @@
             card.style.transform = 'translateY(30px)';
             observer.observe(card);
         });
+
+document.addEventListener("DOMContentLoaded", function () {
+    function spreadEvenly(elements, rows, cols) {
+        const cellWidth = window.innerWidth / cols;
+        const cellHeight = window.innerHeight / rows;
+        let index = 0;
+
+        elements.forEach(el => {
+            const row = Math.floor(index / cols);
+            const col = index % cols;
+
+            // Ambil posisi tengah cell lalu tambahkan offset acak kecil
+            const topPos = row * cellHeight + (Math.random() * cellHeight * 0.4);
+            const leftPos = col * cellWidth + (Math.random() * cellWidth * 0.4);
+
+            el.style.top = `${topPos}px`;
+            el.style.left = `${leftPos}px`;
+
+            index++;
+        });
+    }
+
+    // Planet
+    const planets = document.querySelectorAll(".planet");
+    spreadEvenly(planets, 2, Math.ceil(planets.length / 2));
+    planets.forEach(planet => {
+        const delay = (Math.random() * -20).toFixed(2) + "s";
+        planet.style.animationDelay = delay;
+    });
+
+    // Alien
+    const aliens = document.querySelectorAll(".alien");
+    spreadEvenly(aliens, 2, Math.ceil(aliens.length / 2));
+    aliens.forEach(alien => {
+        const delay = (Math.random() * -10).toFixed(2) + "s";
+        alien.style.animationDelay = delay;
+    });
+
+    // Scroll selalu di atas saat reload
+    window.scrollTo(0, 0);
+});
+
     </script>
+
 </body>
 </html>
