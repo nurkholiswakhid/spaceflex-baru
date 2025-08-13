@@ -119,6 +119,8 @@ var game = {
   next: function() {
     this.level++;
     this.loadLevel(levels[this.level]);
+    this.generateProgressDots();
+
   },
 
   /**
@@ -127,6 +129,8 @@ var game = {
   prev: function() {
     this.level--;
     this.loadLevel(levels[this.level]);
+    this.generateProgressDots();
+
   },
 
   /**
@@ -213,46 +217,135 @@ var game = {
     const wrongAnswers = totalQuestions - correctAnswers;
     const score = Math.round((correctAnswers / totalQuestions) * 100);
 
+    // Determine performance level and styling
+    let performanceLevel = '';
+    let performanceColor = '';
+    let performanceIcon = '';
+    
+    if (score >= 90) {
+        performanceLevel = 'Excellent!';
+        performanceColor = '#10b981';
+        performanceIcon = '🌟';
+    } else if (score >= 80) {
+        performanceLevel = 'Very Good!';
+        performanceColor = '#3b82f6';
+        performanceIcon = '🎯';
+    } else if (score >= 70) {
+        performanceLevel = 'Good!';
+        performanceColor = '#8b5cf6';
+        performanceIcon = '👍';
+    } else if (score >= 60) {
+        performanceLevel = 'Fair';
+        performanceColor = '#f59e0b';
+        performanceIcon = '📈';
+    } else {
+        performanceLevel = 'Keep Trying!';
+        performanceColor = '#ef4444';
+        performanceIcon = '💪';
+    }
+
     const correctDetails = this.solved.length > 0
-        ? `<ul style="text-align:left;">${this.solved.map(q => `<li>✅ ${q}</li>`).join('')}</ul>`
-        : '<em>None</em>';
+        ? `<div class="question-list correct-list">${this.solved.map(q => 
+            `<div class="question-item correct-item">
+                <span class="question-icon">✅</span>
+                <span class="question-text">${q}</span>
+            </div>`
+        ).join('')}</div>`
+        : '<div class="empty-state">No correct answers</div>';
 
     const wrongDetails = totalQuestions > 0
-        ? `<ul style="text-align:left;">${levels.map(level => level.name).filter(name => !this.solved.includes(name)).map(q => `<li>❌ ${q}</li>`).join('')}</ul>`
-        : '<em>None</em>';
+        ? `<div class="question-list wrong-list">${levels.map(level => level.name)
+            .filter(name => !this.solved.includes(name))
+            .map(q => 
+                `<div class="question-item wrong-item">
+                    <span class="question-icon">❌</span>
+                    <span class="question-text">${q}</span>
+                </div>`
+            ).join('')}</div>`
+        : '<div class="empty-state">All questions answered correctly!</div>';
 
     Swal.fire({
-        title: '📊 Quiz Results',
+        title: `${performanceIcon} Quiz Results`,
         html: `
-            <table style="width:100%; text-align:left; border-collapse: collapse;">
-                <tr><td><strong>👤 Name:</strong></td><td>${playerName}</td></tr>
-                <tr><td><strong>🆔 Absence:</strong></td><td>${playerAbsence}</td></tr>
-                <tr><td><strong>🏆 Score:</strong></td><td>${score} / 100</td></tr>
-                <tr><td><strong>❓ Total Questions:</strong></td><td>${totalQuestions}</td></tr>
-                <tr><td><strong>✅ Correct:</strong></td><td style="color:green;">${correctAnswers}</td></tr>
-                <tr><td><strong>❌ Wrong:</strong></td><td style="color:red;">${wrongAnswers}</td></tr>
-            </table>
-            <hr>
-            <h4>✅ Correct Questions</h4>
-            ${correctDetails}
-            <h4>❌ Wrong Questions</h4>
-            ${wrongDetails}
+            <style>
+                .performance-badge {
+                    background: linear-gradient(135deg, ${performanceColor}15, ${performanceColor}25);
+                    border: 2px solid ${performanceColor};
+                    border-radius: 25px;
+                    padding: 12px 20px;
+                    margin: 15px 0;
+                    text-align: center;
+                    font-weight: bold;
+                    color: ${performanceColor};
+                    font-size: 1.1em;
+                }
+            </style>
+            
+            <div class="results-container">
+                <div class="performance-badge">
+                    ${performanceLevel} Your score: ${score}%
+                </div>
+                
+                <div class="player-info">
+                    <div class="player-row">
+                        <span class="player-label">👤 Player Name:</span>
+                        <span class="player-value">${playerName}</span>
+                    </div>
+                    <div class="player-row">
+                        <span class="player-label">🆔 Absence Number:</span>
+                        <span class="player-value">${playerAbsence}</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value score-value">${score}%</div>
+                        <div class="stat-label">Final Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value total-value">${totalQuestions}</div>
+                        <div class="stat-label">Total Questions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value correct-value">${correctAnswers}</div>
+                        <div class="stat-label">Correct Answers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value wrong-value">${wrongAnswers}</div>
+                        <div class="stat-label">Wrong Answers</div>
+                    </div>
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <div class="section-title correct-title">✅ Correct Questions (${correctAnswers})</div>
+                ${correctDetails}
+                
+                <div class="section-title wrong-title">❌ Wrong Questions (${wrongAnswers})</div>
+                ${wrongDetails}
+            </div>
         `,
-        showCancelButton: false,
+        showCancelButton: true,
         focusConfirm: false,
         allowOutsideClick: false,
-        confirmButtonText: 'Reset',
-        cancelButtonText: 'Share',
+        confirmButtonText: '🔄 Play Again',
+        cancelButtonText: '📤 Share Results',
         customClass: {
             confirmButton: 'swal2-krem-btn',
-            cancelButton: 'swal2-biru-btn'
+            cancelButton: 'swal2-biru-btn',
+            popup: 'swal2-enhanced-popup'
         },
         preConfirm: () => this.resetGame()
     }).then((result) => {
         if (result.isDismissed) {
             this.shareResults({
-                playerName, playerAbsence, score, totalQuestions,
-                correctAnswers, wrongAnswers,
+                playerName, 
+                playerAbsence, 
+                score, 
+                totalQuestions,
+                correctAnswers, 
+                wrongAnswers,
+                performanceLevel,
                 correctDetails: this.solved.join(', ') || 'None',
                 wrongDetails: levels.map(level => level.name).filter(name => !this.solved.includes(name)).join(', ') || 'None'
             });
