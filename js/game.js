@@ -288,11 +288,11 @@ var game = {
                 
                 <div class="player-info">
                     <div class="player-row">
-                        <span class="player-label">👤 Player Name:</span>
+                        <span class="player-label"> Player Name:</span>
                         <span class="player-value">${playerName}</span>
                     </div>
                     <div class="player-row">
-                        <span class="player-label">🆔 Absence Number:</span>
+                        <span class="player-label"> Absence Number:</span>
                         <span class="player-value">${playerAbsence}</span>
                     </div>
                 </div>
