@@ -1,6 +1,11 @@
 var levels = [
   {
     name: 'Q1',
+    poin4: 'Sangat Baik',
+    poin3: 'Baik',
+    poin2: 'Cukup',
+    poin1: 'Kurang',
+    poin0: 'Buruk',
     instructions: {
       'en': '<p>Welcome to Flexbox Froggy, a game where you help Froggy and friends by writing CSS code! Guide this frog to the lilypad on the right by using the <code>justify-content</code> property, which aligns items horizontally and accepts the following values:</p><ul><li><code>flex-start</code>: Items align to the left side of the container.</li><li><code>flex-end</code>: Items align to the right side of the container.</li><li><code>center</code>: Items align at the center of the container.</li><li><code>space-between</code>: Items display with equal spacing between them.</li><li><code>space-around</code>: Items display with equal spacing around them.</li></ul><p>For example, <code>justify-content: flex-end;</code> will move the frog to the right. <img src="https://code.org/api/hour/begin_flexbox_froggy.png"></p>',
       'id': '<p> Selamat datang di Flexbox Froggy, tempat permainan dimana kamu membantu Froggy dan teman-teman dengan menulis kode CSS! Arahkan katak ini ke lilypad di sebelah kanan dengan menggunakan properti <code> justify-content </code>, yang menyelaraskan objek secara:</p><ul><li><code>flex-start</code>: Objek selaras dengan wadah sebelah kiri.</li><li><code>flex-end</code>:Objek selaras dengan wadah sebelah kanan. </li><li><code>center</code>: Objek selaras di tengah wadah</li><li><code>space-between</code>: Objek ditampilkan dengan jarak yang sama dengan disekelilingnya.</li> </ul> <p> Misalnya, <code> justify-content: flex-end; </code> akan pindahkan katak ke kanan. <img src = "https://code.org/api/hour/begin_flexbox_froggy.png"> </p> ',
@@ -12,6 +17,11 @@ var levels = [
   },
   {
     name: 'Q2',
+    poin4: '',
+    poin3: '',
+    poin2: '',
+    poin1: '',
+    poin0: '',
     instructions: {
       'en': '<p>Use <code>justify-content</code> again to help these frogs get to their lilypads. Remember that this CSS property aligns items horizontally and accepts the following values:</p><ul><li><code>flex-start</code>: Items align to the left side of the container.</li><li><code>flex-end</code>: Items align to the right side of the container.</li><li><code>center</code>: Items align at the center of the container.</li><li><code>space-between</code>: Items display with equal spacing between them.</li><li><code>space-around</code>: Items display with equal spacing around them.</li></ul>',
       'id': '<p>Gunakan <code>justify-content</code> lagi untuk membantu katak ini ke lilypad. Ingat bahwa properti CSS ini menyejajarkan item secara horizontal dan menerima nilai-nilai berikut: </p><ul><li><code>flex-start</code>: Objek sejajar dengan sisi kiri wadah.</li><li><code>flex-end</code>: Objek sejajar dengan sisi kanan wadah. </li><li><code>center</code>: Objek sejajar di tengah wadah. </li><li><code>space-between</code>: Objek ditampilkan dengan jarak yang sama di antara mereka. </li><li><code>space-around</code>: Objek ditampilkan dengan jarak yang sama di sekitarnya.</li></ul>',

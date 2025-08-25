@@ -1,7 +1,7 @@
 /** 
- * CSS Learning Game - Main Game Object
- * A web-based game for learning CSS with timer functionality
- * Fixed to require Run button click before showing results
+ * CSS Learning Game - Main Game Object with CORRECTED Points System
+ * A web-based game for learning CSS with timer functionality and proper points scoring
+ * Fixed to implement correct point calculation rules
  */
 var game = {
     // ===========================================
@@ -18,11 +18,174 @@ var game = {
     // Timer properties
     timer: null,
     timerStarted: false,
-    timeLeft: localStorage.getItem('timeLeft') ? parseInt(localStorage.getItem('timeLeft'), 10) : 1200, // 20 minutes
+    timeLeft: localStorage.getItem('timeLeft') ? parseInt(localStorage.getItem('timeLeft'), 10) : 20, // 20 minutes
     
     // Run button state - Controls when results are shown
     hasRun: false,
     resultsVisible: false,
+    
+    // Points system properties - CORRECTED
+    levelRunCounts: (localStorage.levelRunCounts && JSON.parse(localStorage.levelRunCounts)) || {},
+    levelPoints: (localStorage.levelPoints && JSON.parse(localStorage.levelPoints)) || {},
+    levelCompleted: (localStorage.levelCompleted && JSON.parse(localStorage.levelCompleted)) || {},
+    
+    // ===========================================
+    // POINTS SYSTEM METHODS - CORRECTED
+    // ===========================================
+    
+    /**
+     * Get current level identifier
+     */
+    getCurrentLevelId: function() {
+        return levels[this.level] ? levels[this.level].name : 'level_' + this.level;
+    },
+    
+    /**
+     * Initialize points for current level
+     */
+    initializeLevelPoints: function() {
+        const levelId = this.getCurrentLevelId();
+        
+        // Initialize run count if not exists
+        if (!(levelId in this.levelRunCounts)) {
+            this.levelRunCounts[levelId] = 0;
+        }
+        
+        // Initialize points if not exists
+        if (!(levelId in this.levelPoints)) {
+            this.levelPoints[levelId] = 0;
+        }
+        
+        // Initialize completion status if not exists
+        if (!(levelId in this.levelCompleted)) {
+            this.levelCompleted[levelId] = false;
+        }
+    },
+    
+    /**
+     * Calculate points for current attempt - CORRECTED LOGIC
+     */
+    calculatePoints: function() {
+        const levelId = this.getCurrentLevelId();
+        this.initializeLevelPoints();
+        
+        // If level is already completed, don't increment run count or change points
+        if (this.levelCompleted[levelId]) {
+            console.log('Level already completed - run count and points preserved:', this.levelPoints[levelId]);
+            return this.levelPoints[levelId];
+        }
+        
+        // Increment run count only if level not completed
+        this.levelRunCounts[levelId]++;
+        
+        let points = 0;
+        const runCount = this.levelRunCounts[levelId];
+        
+        // CORRECTED: Calculate points based on run count
+        if (runCount === 1) {
+            points = 4;
+        } else if (runCount === 2) {
+            points = 3;
+        } else if (runCount === 3) {
+            points = 2;
+        } else if (runCount >= 4) {
+            points = 1; // Minimum 1 point if answered correctly
+        }
+        
+        console.log(`Level: ${levelId}, Run count: ${runCount}, Potential points if correct: ${points}`);
+        return points;
+    },
+    
+    /**
+     * Award points for correct answer - CORRECTED
+     */
+    awardPoints: function() {
+        const levelId = this.getCurrentLevelId();
+        
+        // Only award points if not already completed
+        if (!this.levelCompleted[levelId]) {
+            const points = this.calculatePoints(); // This will increment run count
+            this.levelPoints[levelId] = points;
+            this.levelCompleted[levelId] = true;
+            console.log(`Points awarded for ${levelId}: ${points} (after ${this.levelRunCounts[levelId]} runs)`);
+        } else {
+            console.log(`Level ${levelId} already completed - no additional points awarded`);
+        }
+        
+        this.savePointsData();
+    },
+    
+    /**
+     * Track run attempt without awarding points (for incorrect answers) - CORRECTED
+     */
+    trackRunAttempt: function() {
+        const levelId = this.getCurrentLevelId();
+        this.initializeLevelPoints();
+        
+        // Only increment run count if level not completed
+        if (!this.levelCompleted[levelId]) {
+            this.levelRunCounts[levelId]++;
+            console.log(`Run attempt tracked for ${levelId}: ${this.levelRunCounts[levelId]} runs, no points awarded (incorrect)`);
+        }
+        
+        this.savePointsData();
+    },
+    
+    /**
+     * Set points to 0 for incorrect answer when moving to next level - CORRECTED
+     */
+    setZeroPoints: function() {
+        const levelId = this.getCurrentLevelId();
+        this.initializeLevelPoints();
+        
+        // Only set to 0 if not already completed
+        if (!this.levelCompleted[levelId]) {
+            this.levelPoints[levelId] = 0;
+            this.levelCompleted[levelId] = true; // Mark as completed with 0 points
+            console.log(`Zero points set for ${levelId} (unanswered or incorrect)`);
+        }
+        
+        this.savePointsData();
+    },
+    
+    /**
+     * Get total points across all levels
+     */
+    getTotalPoints: function() {
+        let total = 0;
+        for (const levelId in this.levelPoints) {
+            total += this.levelPoints[levelId];
+        }
+        return total;
+    },
+    
+    /**
+     * Get maximum possible points
+     */
+    getMaxPossiblePoints: function() {
+        return levels.length * 4; // 4 points per level
+    },
+    
+    /**
+     * Save points data to localStorage
+     */
+    savePointsData: function() {
+        localStorage.setItem('levelRunCounts', JSON.stringify(this.levelRunCounts));
+        localStorage.setItem('levelPoints', JSON.stringify(this.levelPoints));
+        localStorage.setItem('levelCompleted', JSON.stringify(this.levelCompleted));
+    },
+    
+    /**
+     * Reset all points data
+     */
+    resetPointsData: function() {
+        this.levelRunCounts = {};
+        this.levelPoints = {};
+        this.levelCompleted = {};
+        localStorage.removeItem('levelRunCounts');
+        localStorage.removeItem('levelPoints');
+        localStorage.removeItem('levelCompleted');
+    },
     
     // ===========================================
     // TIMER METHODS
@@ -64,7 +227,7 @@ var game = {
     resetTimer: function() {
         this.timerStarted = false;
         clearInterval(this.timer);
-        this.timeLeft = 1200; // 20 minutes
+        this.timeLeft = 20; // 20 minutes
         localStorage.removeItem('timeLeft');
     },
 
@@ -116,6 +279,12 @@ var game = {
      * Move to next level
      */
     next: function() {
+        // Set zero points for current level if not completed
+        const currentLevelId = this.getCurrentLevelId();
+        if (!this.levelCompleted[currentLevelId] && $.inArray(levels[this.level].name, this.solved) === -1) {
+            this.setZeroPoints();
+        }
+        
         this.level++;
         this.resetRunState(); // Reset run state for new level
         this.loadLevel(levels[this.level]);
@@ -126,6 +295,12 @@ var game = {
      * Move to previous level
      */
     prev: function() {
+        // Set zero points for current level if not completed
+        const currentLevelId = this.getCurrentLevelId();
+        if (!this.levelCompleted[currentLevelId] && $.inArray(levels[this.level].name, this.solved) === -1) {
+            this.setZeroPoints();
+        }
+        
         this.level--;
         this.resetRunState(); // Reset run state for new level
         this.loadLevel(levels[this.level]);
@@ -136,6 +311,12 @@ var game = {
      * End the game and show results
      */
     endGame: function() {
+        // Set zero points for current level if not completed
+        const currentLevelId = this.getCurrentLevelId();
+        if (!this.levelCompleted[currentLevelId] && $.inArray(levels[this.level].name, this.solved) === -1) {
+            this.setZeroPoints();
+        }
+        
         clearInterval(this.timer);
         this.showResults();
     },
@@ -145,6 +326,7 @@ var game = {
      */
     resetGame: function() {
         this.resetTimer();
+        this.resetPointsData(); // Reset points data
         this.level = 0;
         this.answers = {};
         this.solved = [];
@@ -158,7 +340,7 @@ var game = {
     },
 
     // ===========================================
-    // RUN BUTTON METHODS - FIXED IMPLEMENTATION
+    // RUN BUTTON METHODS - ENHANCED WITH CORRECTED POINTS
     // ===========================================
     
     /**
@@ -167,11 +349,12 @@ var game = {
     resetRunState: function() {
         this.hasRun = false;
         this.resultsVisible = false;
+        this.initializeLevelPoints(); // Initialize points for new level
         console.log('Run state reset - results hidden until Run button is clicked');
     },
     
     /**
-     * Handle Run button click - Show results only when button is clicked
+     * Handle Run button click - Show results and track points CORRECTLY
      */
     runCode: function() {
         console.log('Run button clicked - executing code...');
@@ -256,149 +439,278 @@ var game = {
     },
 
     /**
-     * Show game results with SweetAlert2
-     */
-    showResults: function () {
-        const playerName = localStorage.getItem('playerName') || 'Unknown';
-        const playerAbsence = localStorage.getItem('playerAbsence') || '-';
-        const totalQuestions = levels.length;
-        const correctAnswers = this.solved.length;
-        const wrongAnswers = totalQuestions - correctAnswers;
-        const score = Math.round((correctAnswers / totalQuestions) * 100);
+ * Show game results with SweetAlert2 - WIDER + BEAUTIFUL SCROLL
+ */
+showResults: function () {
+    const playerName = localStorage.getItem('playerName') || 'Unknown';
+    const playerAbsence = localStorage.getItem('playerAbsence') || '-';
+    const totalQuestions = levels.length;
+    const correctAnswers = this.solved.length;
+    const wrongAnswers = totalQuestions - correctAnswers;
+    const score = Math.round((correctAnswers / totalQuestions) * 100);
 
-        // Determine performance level and styling
-        let performanceLevel = '';
-        let performanceColor = '';
-        let performanceIcon = '';
+    // Points calculation
+    const totalPoints = this.getTotalPoints();
+    const maxPossiblePoints = this.getMaxPossiblePoints();
+    const pointsPercentage = Math.round((totalPoints / maxPossiblePoints) * 100);
 
-        if (score >= 90) {
-            performanceLevel = 'Excellent!';
-            performanceColor = '#10b981';
-            performanceIcon = '🌟';
-        } else if (score >= 80) {
-            performanceLevel = 'Very Good!';
-            performanceColor = '#3b82f6';
-            performanceIcon = '🎯';
-        } else if (score >= 70) {
-            performanceLevel = 'Good!';
-            performanceColor = '#8b5cf6';
-            performanceIcon = '👍';
-        } else if (score >= 60) {
-            performanceLevel = 'Fair';
-            performanceColor = '#f59e0b';
-            performanceIcon = '📈';
-        } else {
-            performanceLevel = 'Keep Trying!';
-            performanceColor = '#ef4444';
-            performanceIcon = '💪';
-        }
+    // Determine performance level
+    let performanceLevel = '';
+    let performanceColor = '';
+    let performanceIcon = '';
 
-        const correctDetails = this.solved.length > 0 ? `
-            <div class="question-list correct-list">
-                ${this.solved.map(q => `
+    if (pointsPercentage >= 90) {
+        performanceLevel = 'Excellent!';
+        performanceColor = '#10b981';
+        performanceIcon = '🌟';
+    } else if (pointsPercentage >= 80) {
+        performanceLevel = 'Very Good!';
+        performanceColor = '#3b82f6';
+        performanceIcon = '🎯';
+    } else if (pointsPercentage >= 70) {
+        performanceLevel = 'Good!';
+        performanceColor = '#8b5cf6';
+        performanceIcon = '👍';
+    } else if (pointsPercentage >= 60) {
+        performanceLevel = 'Fair';
+        performanceColor = '#f59e0b';
+        performanceIcon = '📈';
+    } else {
+        performanceLevel = 'Keep Trying!';
+        performanceColor = '#ef4444';
+        performanceIcon = '💪';
+    }
+
+    const correctDetails = this.solved.length > 0 ? `
+        <div class="question-list correct-list">
+            ${this.solved.map(q => {
+                const points = this.levelPoints[q] || 0;
+                const runCount = this.levelRunCounts[q] || 0;
+                let explanation = '';
+                if (runCount === 1) explanation = 'Perfect! 1st try';
+                else if (runCount === 2) explanation = 'Good! 2nd try';
+                else if (runCount === 3) explanation = 'OK! 3rd try';
+                else explanation = `${runCount} tries`;
+                
+                return `
                     <div class="question-item correct-item">
                         <span class="question-icon">✅</span>
                         <span class="question-text">${q}</span>
+                        <span class="points-info">
+                            <span class="points-value">${points} pts</span>
+                            <span class="run-count">(${explanation})</span>
+                        </span>
                     </div>
-                `).join('')}
-            </div>
-        ` : '<div class="empty-state">No correct answers</div>';
+                `;
+            }).join('')}
+        </div>
+    ` : '<div class="empty-state">No correct answers</div>';
 
-        const wrongDetails = totalQuestions > 0 ? `
-            <div class="question-list wrong-list">
-                ${levels.map(level => level.name)
-                    .filter(name => !this.solved.includes(name))
-                    .map(q => `
+    const wrongDetails = totalQuestions > 0 ? `
+        <div class="question-list wrong-list">
+            ${levels.map(level => level.name)
+                .filter(name => !this.solved.includes(name))
+                .map(q => {
+                    const points = this.levelPoints[q] || 0;
+                    const runCount = this.levelRunCounts[q] || 0;
+                    let explanation = runCount > 0 ? `${runCount} tries, wrong` : 'not attempted';
+                    
+                    return `
                         <div class="question-item wrong-item">
                             <span class="question-icon">❌</span>
                             <span class="question-text">${q}</span>
+                            <span class="points-info">
+                                <span class="points-value">${points} pts</span>
+                                <span class="run-count">(${explanation})</span>
+                            </span>
                         </div>
-                    `).join('')}
-            </div>
-        ` : '<div class="empty-state">All questions answered correctly!</div>';
+                    `;
+                }).join('')}
+        </div>
+    ` : '<div class="empty-state">All questions answered correctly!</div>';
 
-        Swal.fire({
-            title: `${performanceIcon} Quiz Results`,
-            html: `
-                <style>
-                    .performance-badge {
-                        background: linear-gradient(135deg, ${performanceColor}15, ${performanceColor}25);
-                        border: 2px solid ${performanceColor};
-                        border-radius: 25px;
-                        padding: 12px 20px;
-                        margin: 15px 0;
-                        text-align: center;
-                        font-weight: bold;
-                        color: ${performanceColor};
-                        font-size: 1.1em;
-                    }
-                </style>
-                <div class="results-container">
-                    <div class="performance-badge">
-                        ${performanceLevel}<br>Your score: ${score}%
-                    </div>
-                    <div class="player-info">
-                        <div class="player-row">
-                            <span class="player-label">👤 Player Name:</span>
-                            <span class="player-value">${playerName}</span>
-                        </div>
-                        <div class="player-row">
-                            <span class="player-label">🔢 Absence Number:</span>
-                            <span class="player-value">${playerAbsence}</span>
-                        </div>
-                    </div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value score-value">${score}%</div>
-                            <div class="stat-label">Final Score</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value total-value">${totalQuestions}</div>
-                            <div class="stat-label">Total Questions</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value correct-value">${correctAnswers}</div>
-                            <div class="stat-label">Correct Answers</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value wrong-value">${wrongAnswers}</div>
-                            <div class="stat-label">Wrong Answers</div>
-                        </div>
-                    </div>
-                    <div class="section-divider"></div>
-                    <div class="section-title correct-title">✅ Correct Questions (${correctAnswers})</div>
-                    ${correctDetails}
-                    <div class="section-title wrong-title">❌ Wrong Questions (${wrongAnswers})</div>
-                    ${wrongDetails}
+    Swal.fire({
+        title: `${performanceIcon} Quiz Results`,
+        html: `
+            <style>
+                .swal2-enhanced-popup {
+                    max-width: 900px !important;
+                    width: 90% !important;
+                }
+                .results-container {
+                    max-height: 70vh;
+                    overflow-y: auto;
+                    text-align: left;
+                    padding: 12px 16px;
+                    border-radius: 12px;
+                    box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+                }
+                /* Scrollbar style */
+                .results-container::-webkit-scrollbar {
+                    width: 5px;
+                }
+                .results-container::-webkit-scrollbar-track {
+                    border-radius: 10px;
+                }
+                .results-container::-webkit-scrollbar-thumb {
+                    background: #cbd5e1;
+                    border-radius: 10px;
+                }
+                .results-container::-webkit-scrollbar-thumb:hover {
+                    background: #94a3b8;
+                }
+
+                .performance-badge {
+                    background: linear-gradient(135deg, ${performanceColor}15, ${performanceColor}25);
+                    border: 2px solid ${performanceColor};
+                    border-radius: 25px;
+                    padding: 12px 20px;
+                    margin: 15px 0;
+                    text-align: center;
+                    font-weight: bold;
+                    color: ${performanceColor};
+                    font-size: 1.1em;
+                }
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 15px;
+                    margin: 15px 0;
+                }
+                .stat-card {
+                    background: #f1f5f9;
+                    padding: 12px;
+                    border-radius: 12px;
+                    text-align: center;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                .stat-value {
+                    font-size: 1.4em;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+
+                }
+                .section-title {
+                    margin: 12px 0 6px 0;
+                    font-weight: bold;
+                    font-size: 1.1em;
+                }
+                .question-item {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 8px 12px;
+                    margin: 4px 0;
+                    border-radius: 8px;
+                    background: #f8f9fa;
+                }
+                .points-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .points-value {
+                    font-weight: bold;
+                    color: #2563eb;
+                    background: #dbeafe;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 0.9em;
+                }
+                .run-count {
+                    font-size: 0.8em;
+                    color: #6b7280;
+                }
+                .correct-item .points-value {
+                    color: #059669;
+                    background: #d1fae5;
+                }
+                .wrong-item .points-value {
+                    color: #dc2626;
+                    background: #fee2e2;
+                }
+            </style>
+            <div class="results-container">
+                <div class="performance-badge">
+                    ${performanceLevel}<br>
+                    Score: ${score}% | Points: ${totalPoints}/${maxPossiblePoints} (${pointsPercentage}%)
                 </div>
-            `,
-            showCancelButton: true,
-            focusConfirm: false,
-            allowOutsideClick: false,
-            confirmButtonText: '🔄 Play Again',
-            cancelButtonText: '📤 Share Results',
-            customClass: {
-                confirmButton: 'swal2-krem-btn',
-                cancelButton: 'swal2-biru-btn',
-                popup: 'swal2-enhanced-popup'
-            },
-            preConfirm: () => this.resetGame()
-        }).then((result) => {
-            if (result.isDismissed) {
-                this.shareResults({
-                    playerName,
-                    playerAbsence,
-                    score,
-                    totalQuestions,
-                    correctAnswers,
-                    wrongAnswers,
-                    performanceLevel,
-                    correctDetails: this.solved.join(', ') || 'None',
-                    wrongDetails: levels.map(level => level.name).filter(name => !this.solved.includes(name)).join(', ') || 'None'
-                });
-            }
-        });
-    },
+                <div class="player-info">
+                    <div class="player-row">
+                        <span class="player-label">👤 Player Name:</span>
+                        <span class="player-value">${playerName}</span>
+                    </div>
+                    <div class="player-row">
+                        <span class="player-label">🔢 Absence Number:</span>
+                        <span class="player-value">${playerAbsence}</span>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value score-value">${score}%</div>
+                        <div class="stat-label">Accuracy Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value points-value">${totalPoints}/${maxPossiblePoints}</div>
+                        <div class="stat-label">Total Points</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value correct-value">${correctAnswers}</div>
+                        <div class="stat-label">Correct Answers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value wrong-value">${wrongAnswers}</div>
+                        <div class="stat-label">Wrong Answers</div>
+                    </div>
+                </div>
+                <div class="section-divider"></div>
+                <div class="section-title correct-title">✅ Correct Questions (${correctAnswers})</div>
+                ${correctDetails}
+                <div class="section-title wrong-title">❌ Wrong Questions (${wrongAnswers})</div>
+                ${wrongDetails}
+            </div>
+        `,
+        showCancelButton: true,
+        focusConfirm: false,
+        allowOutsideClick: false,
+        confirmButtonText: '🔄 Play Again',
+        cancelButtonText: '📤 Share Results',
+        customClass: {
+            popup: 'swal2-enhanced-popup',
+            confirmButton: 'swal2-krem-btn',
+            cancelButton: 'swal2-biru-btn'
+        },
+        preConfirm: () => this.resetGame()
+    }).then((result) => {
+        if (result.isDismissed) {
+            this.shareResults({
+                playerName,
+                playerAbsence,
+                score,
+                totalQuestions,
+                correctAnswers,
+                wrongAnswers,
+                performanceLevel,
+                totalPoints,
+                maxPossiblePoints,
+                pointsPercentage,
+                correctDetails: this.solved.map(name => {
+                    const points = this.levelPoints[name] || 0;
+                    const runs = this.levelRunCounts[name] || 0;
+                    return `${name} (${points} pts, ${runs} runs)`;
+                }).join(', ') || 'None',
+                wrongDetails: levels.map(level => level.name).filter(name => !this.solved.includes(name))
+                    .map(name => {
+                        const points = this.levelPoints[name] || 0;
+                        const runs = this.levelRunCounts[name] || 0;
+                        return `${name} (${points} pts, ${runs} runs)`;
+                    }).join(', ') || 'None'
+            });
+        }
+    });
+},
+
 
     /**
      * Generate progress dots with numbers and sync with level navigation
@@ -415,6 +727,15 @@ var game = {
                 .attr('data-level', i)
                 .text(i + 1);
 
+            // Add CORRECTED points information to dot title
+            const levelName = levels[i].name;
+            const points = this.levelPoints[levelName] || 0;
+            const runCount = this.levelRunCounts[levelName] || 0;
+            const isCompleted = this.levelCompleted[levelName] || false;
+            const statusText = isCompleted ? (points > 0 ? 'Completed' : 'Failed') : 'Not attempted';
+            
+            $dot.attr('title', `${levelName} - ${points} points (${runCount} runs) - ${statusText}`);
+
             // status solved / current
             if (this.solved.indexOf(levels[i].name) !== -1) {
                 $dot.addClass('solved');
@@ -426,6 +747,13 @@ var game = {
             // klik pindah level
             $dot.on('click', function (e) {
                 e.stopPropagation();
+                
+                // Set zero points for current level if not completed before switching
+                const currentLevelId = self.getCurrentLevelId();
+                if (!self.levelCompleted[currentLevelId] && $.inArray(levels[self.level].name, self.solved) === -1) {
+                    self.setZeroPoints();
+                }
+                
                 self.saveAnswer();
                 self.level = i;
                 self.resetRunState(); // Reset run state when changing levels
@@ -460,7 +788,7 @@ var game = {
     },
 
     /**
-     * Share results via WhatsApp and Google Sheets
+     * Share results via WhatsApp and Google Sheets - ENHANCED WITH CORRECTED POINTS
      */
     shareResults: function(quizData) {
         const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbw7ntIrknsJnYupRTLR5M28-eTHLKapEiBlcQlIoCQSIr8q5mz_NVO5u49BfEpU5ks/exec';
@@ -474,7 +802,7 @@ var game = {
             body: JSON.stringify(quizData)
         })
         .then(() => {
-            const shareText = `I scored ${quizData.score}/100 in the quiz! Check it out!`;
+            const shareText = `I scored ${quizData.score}% (${quizData.totalPoints}/${quizData.maxPossiblePoints} points) in the CSS learning game! Check it out!`;
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
             window.open(whatsappUrl, '_blank');
         })
@@ -512,8 +840,16 @@ var game = {
      * Bind menu-related events
      */
     bindMenuEvents: function() {
+        const self = this;
+        
         // Level marker clicks
         $('.level-marker').on('click', function() {
+            // Set zero points for current level if not completed before switching
+            const currentLevelId = self.getCurrentLevelId();
+            if (!self.levelCompleted[currentLevelId] && $.inArray(levels[self.level].name, self.solved) === -1) {
+                self.setZeroPoints();
+            }
+            
             game.saveAnswer();
             const level = $(this).attr('data-level');
             game.level = parseInt(level, 10);
@@ -644,7 +980,7 @@ var game = {
      * Bind game-specific events
      */
     bindGameEvents: function() {
-        // Run button click - MAIN EVENT HANDLER
+        // Run button click - MAIN EVENT HANDLER WITH CORRECTED POINTS
         $(document).on('click', '#runBtn', function() {
             console.log('Run button clicked');
             game.runCode();
@@ -752,6 +1088,8 @@ var game = {
                 localStorage.setItem('answers', JSON.stringify(game.answers));
                 localStorage.setItem('solved', JSON.stringify(game.solved));
                 localStorage.setItem('timeLeft', game.timeLeft);
+                // Save points data
+                game.savePointsData();
             })
             .on('hashchange', function() {
                 game.language = window.location.hash.substring(1) || 'en';
@@ -802,7 +1140,7 @@ var game = {
     },
 
     // ===========================================
-    // GAME LOGIC METHODS - FIXED
+    // GAME LOGIC METHODS - CORRECTED WITH PROPER POINTS
     // ===========================================
 
     /**
@@ -848,7 +1186,7 @@ var game = {
     },
 
     /**
-     * Compare frog and lilypad positions - Only when results are visible
+     * Compare frog and lilypad positions - CORRECTED WITH PROPER POINTS LOGIC
      */
     compare: function() {
         // Only compare if results should be visible
@@ -885,19 +1223,34 @@ var game = {
             }
         });
 
-        // Update UI based on correctness
+        // CORRECTED: Update UI and handle points based on correctness
         if (correct) {
+            // Award points for correct solution (this will handle run counting correctly)
+            this.awardPoints();
+            
             if ($.inArray(level.name, this.solved) === -1) {
                 this.solved.push(level.name);
             }
             $('[data-level=' + this.level + ']').addClass('solved');
             $('#next').removeClass('disabled').addClass('animated animation');
-            console.log('Solution is correct - Next button enabled');
+            
+            const levelId = this.getCurrentLevelId();
+            const points = this.levelPoints[levelId] || 0;
+            console.log(`✅ Solution is correct - Next button enabled. Points awarded: ${points}`);
         } else {
+            // CORRECTED: Track run attempt for incorrect answer (increments run count but no points)
+            this.trackRunAttempt();
+            
             this.changed = true;
             $('#next').removeClass('animated animation').addClass('disabled');
-            console.log('Solution is incorrect - Next button disabled');
+            
+            const levelId = this.getCurrentLevelId();
+            const runCount = this.levelRunCounts[levelId] || 0;
+            console.log(`❌ Solution is incorrect - Next button disabled. Run attempts: ${runCount}`);
         }
+        
+        // Update progress dots with latest points information
+        this.generateProgressDots();
     },
 
     /**
