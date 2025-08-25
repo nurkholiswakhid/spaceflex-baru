@@ -674,8 +674,8 @@ showResults: function () {
         showCancelButton: true,
         focusConfirm: false,
         allowOutsideClick: false,
-        confirmButtonText: '🔄 Play Again',
-        cancelButtonText: '📤 Share Results',
+        confirmButtonText: 'Play Again',
+        cancelButtonText: 'Share Results',
         customClass: {
             popup: 'swal2-enhanced-popup',
             confirmButton: 'swal2-krem-btn',
