@@ -765,6 +765,8 @@ Level/Konsep CSS yang saya salah menjawab: ${quizData.wrongDetails}.
 Tolong berikan:
 1. Feedback singkat dan memotivasi tentang performa saya.
 2. Saran pembelajaran ke depannya mengenai CSS Flexbox (khususnya konsep flexbox yang saya salah, jika ada). Saran harus aplikatif.
+3. jangan rekomendasikan website lain untuk belajar css flexbox, cukup berikan saran pembelajaran berdasarkan konsep yang saya salah.
+
 
 Gunakan bahasa Indonesia yang kasual, ramah, dan ringkas (maksimal 3 paragraf). Jangan gunakan format markdown header (seperti # atau ##), tapi boleh list atau bold.`;
 
