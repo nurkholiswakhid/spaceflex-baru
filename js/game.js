@@ -646,7 +646,7 @@ showResults: function () {
                 </div>
                 <div class="ai-feedback-container" style="margin: 15px 0; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; text-align: left;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                        <h3 style="margin: 0; font-size: 1.1em; color: #334155;">🤖 Saran Pembelajaran AI</h3>
+                        <h3 style="margin: 0; font-size: 1.1em; color: #334155;">Saran Pembelajaran AI</h3>
                     </div>
                     <div id="ai-feedback-content">
                         <button id="btn-get-ai-feedback" style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Dapatkan Masukan dari Gemini AI ✨</button>
@@ -654,11 +654,11 @@ showResults: function () {
                 </div>
                 <div class="player-info">
                     <div class="player-row">
-                        <span class="player-label">👤 Player Name:</span>
+                        <span class="player-label">Player Name:</span>
                         <span class="player-value">${playerName}</span>
                     </div>
                     <div class="player-row">
-                        <span class="player-label">🔢 Absence Number:</span>
+                        <span class="player-label">Absence Number:</span>
                         <span class="player-value">${playerAbsence}</span>
                     </div>
                 </div>
