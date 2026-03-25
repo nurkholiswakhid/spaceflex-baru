@@ -649,7 +649,7 @@ showResults: function () {
                         <h3 style="margin: 0; font-size: 1.1em; color: #334155;">🤖 Saran Pembelajaran AI</h3>
                     </div>
                     <div id="ai-feedback-content">
-                        <button id="btn-get-ai-feedback" style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Dapatkan Masukan dari Gemini AI ✨</button>
+                        <div style="text-align: center; color: #64748b; padding: 10px;">⏳ Mempersiapkan AI...</div>
                     </div>
                 </div>
                 <div class="player-info">
@@ -698,12 +698,8 @@ showResults: function () {
             cancelButton: 'swal2-biru-btn'
         },
         didOpen: () => {
-            const aiBtn = document.getElementById('btn-get-ai-feedback');
-            if (aiBtn) {
-                aiBtn.addEventListener('click', () => {
-                    game.handleAIFeedbackRequest(quizDataForAI);
-                });
-            }
+            // Langsung otomatis panggil AI Request saat modal tampil
+            game.handleAIFeedbackRequest(quizDataForAI);
         },
         preConfirm: () => this.resetGame()
     }).then((result) => {
