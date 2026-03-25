@@ -1,34 +1,3 @@
-#runBtn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin: 10px 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-#runBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-
-
-
-@keyframes pulse-red {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-
 /* ==========================================================================
    RESET & BASE STYLES
    ========================================================================== */
@@ -88,6 +57,11 @@ body {
     
     /* Background */
     background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, #0f1419 100%);
+}
+
+/* Allow overflow when SweetAlert2 is shown */
+body.swal2-shown {
+    overflow: visible !important;
 }
 
 .app-container {
@@ -859,6 +833,27 @@ body {
     border: 1px solid var(--cosmic-blue) !important;
     font-family: 'Orbitron', sans-serif !important;
     font-weight: 600 !important;
+}
+
+/* Fix for SweetAlert2 popup visibility - Ensure modal is not clipped by overflow:hidden */
+.swal2-container {
+    z-index: 9999 !important;
+    position: fixed !important;
+    pointer-events: auto !important;
+}
+
+.swal2-backdrop {
+    z-index: 9998 !important;
+    position: fixed !important;
+}
+
+.swal2-shown > body {
+    overflow: visible !important;
+}
+
+html.swal2-shown,
+body.swal2-shown {
+    overflow: visible !important;
 }
 
 /* ==========================================================================

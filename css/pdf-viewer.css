@@ -1,0 +1,52 @@
+.pdf-description {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #e1e1e1;
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.pdf-viewer {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pdf-viewer object {
+    display: block;
+    border-radius: 8px;
+    background: white;
+}
+
+.pdf-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pdf-actions .btn {
+    min-width: 160px;
+    text-align: center;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+}
+
+.pdf-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Animasi untuk loading PDF */
+.pdf-viewer::before {
+    content: "Loading PDF...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 1.2em;
+    opacity: 0.7;
+}

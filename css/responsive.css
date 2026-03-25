@@ -1,0 +1,181 @@
+/* Responsive Styles */
+
+/* Base responsive styles */
+@media screen and (max-width: 1200px) {
+    .container {
+        width: 95%;
+    }
+}
+
+/* Tablet styles */
+@media screen and (max-width: 768px) {
+    /* Hero section */
+    .hero {
+        margin-top: 50px;
+        padding: 1rem;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    /* Features section */
+    .features-grid,
+    .features-grid2 {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0;
+    }
+
+    .features {
+        padding: 3rem 1rem;
+    }
+
+    /* Video container */
+    .video-section {
+        padding: 3rem 1rem;
+    }
+
+    .section-title h2,
+    .video-title h2,
+    .credits-section h2 {
+        font-size: 2rem;
+    }
+
+    .section-title p,
+    .video-title p,
+    .credits-description {
+        font-size: 1rem;
+    }
+
+    .video-container {
+        padding: 0;
+    }
+
+    /* Modal styles */
+    .modal-content {
+        width: 90%;
+        max-height: 90vh;
+        margin: 5vh auto;
+    }
+
+    /* Credits */
+    .credits-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+/* Mobile styles */
+@media screen and (max-width: 480px) {
+    /* Hero section */
+    .hero {
+        min-height: 80vh;
+        margin-top: 50px;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    /* Section titles */
+    .section-title h2,
+    .video-title h2,
+    .credits-section h2 {
+        font-size: 1.8rem;
+    }
+
+    /* Features section */
+    .features-grid,
+    .features-grid2 {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+
+    /* Modal styles */
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .quiz-form label {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    /* Credits */
+    .credits-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .credits-card {
+        padding: 1.5rem;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Small mobile styles */
+@media screen and (max-width: 360px) {
+    .hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+        padding: 0.8rem 1.5rem;
+    }
+
+    .section-title h2 {
+        font-size: 1.6rem;
+    }
+}
+
+/* Height-based media queries */
+@media screen and (max-height: 600px) {
+    .hero {
+        min-height: auto;
+        padding: 2rem 1rem;
+    }
+}
+
+/* Landscape mode */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .hero {
+        min-height: auto;
+        padding: 2rem 1rem;
+        margin-top: 50px;
+    }
+    
+    .hero-content {
+        max-width: 600px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+}

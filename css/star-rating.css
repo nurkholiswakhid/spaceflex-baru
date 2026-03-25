@@ -1,0 +1,64 @@
+.star-counter {
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    padding: 0.5em;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 1em;
+    margin-left: 1em;
+}
+
+.star-animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    animation: star-appear 1s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes star-appear {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -200%) scale(1);
+    }
+}
+
+/* Status indicator for completed materials */
+.feature-card {
+    position: relative;
+}
+
+.feature-card.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 24px;
+    height: 24px;
+    background: rgba(46, 204, 113, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Hover effect for completed cards */
+.feature-card.completed {
+    border: 2px solid rgba(46, 204, 113, 0.3);
+}
