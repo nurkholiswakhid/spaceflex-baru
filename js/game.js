@@ -649,7 +649,7 @@ showResults: function () {
                         <h3 style="margin: 0; font-size: 1.1em; color: #334155;">🤖 Saran Pembelajaran AI</h3>
                     </div>
                     <div id="ai-feedback-content">
-                        <div style="text-align: center; color: #64748b; padding: 10px;">⏳ Mempersiapkan AI...</div>
+                        <button id="btn-get-ai-feedback" style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Dapatkan Masukan dari Gemini AI ✨</button>
                     </div>
                 </div>
                 <div class="player-info">
@@ -698,8 +698,12 @@ showResults: function () {
             cancelButton: 'swal2-biru-btn'
         },
         didOpen: () => {
-            // Langsung otomatis panggil AI Request saat modal tampil
-            game.handleAIFeedbackRequest(quizDataForAI);
+            const aiBtn = document.getElementById('btn-get-ai-feedback');
+            if (aiBtn) {
+                aiBtn.addEventListener('click', () => {
+                    game.handleAIFeedbackRequest(quizDataForAI);
+                });
+            }
         },
         preConfirm: () => this.resetGame()
     }).then((result) => {
@@ -734,16 +738,14 @@ showResults: function () {
     /**
      * Handle AI Feedback Request Flow
      */
-    handleAIFeedbackRequest: function(quizData, forcePrompt = false) {
-        const defaultKey = 'AIzaSyCDbGXpG9nK3SxutQn5YHEoUHPvkT8nR4I';
-        const savedApiKey = localStorage.getItem('geminiApiKey') || defaultKey;
-        
-        if (forcePrompt || !savedApiKey) {
+    handleAIFeedbackRequest: function(quizData) {
+        const savedApiKey = localStorage.getItem('geminiApiKey');
+        if (!savedApiKey) {
             const feedbackContent = document.getElementById('ai-feedback-content');
             if (feedbackContent) {
                 feedbackContent.innerHTML = `
                     <div style="font-size: 0.9em; margin-bottom: 8px; color: #334155;">Masukkan API Key Gemini Anda:</div>
-                    <input type="password" id="ai-api-key-input" placeholder="AIzaSy..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 8px; box-sizing: border-box;" value="${savedApiKey}">
+                    <input type="password" id="ai-api-key-input" placeholder="AIzaSy..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 8px; box-sizing: border-box;">
                     <button id="btn-save-api-key" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Simpan & Mulai Analisis</button>
                     <div style="font-size: 0.8em; margin-top: 8px; text-align: center;"><a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #3b82f6; text-decoration: none;">Dapatkan API Key Gratis di Google AI Studio</a></div>
                 `;
@@ -820,7 +822,7 @@ Gunakan bahasa Indonesia yang kasual, ramah, dan ringkas (maksimal 3 paragraf). 
             
             document.getElementById('btn-get-ai-feedback-retry').addEventListener('click', () => {
                 localStorage.removeItem('geminiApiKey');
-                this.handleAIFeedbackRequest(quizData, true);
+                this.handleAIFeedbackRequest(quizData);
             });
         }
     },
@@ -1149,26 +1151,6 @@ Gunakan bahasa Indonesia yang kasual, ramah, dan ringkas (maksimal 3 paragraf). 
      * Bind UI events
      */
     bindUIEvents: function() {
-        // Finish Quiz button
-        $('#finishQuizBtn').on('click', function() {
-            Swal.fire({
-                title: 'Selesai Lebih Awal?',
-                text: 'Apakah Anda yakin ingin mengakhiri kuis sekarang dan melihat hasilnya?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Selesaikan',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'swal2-krem-btn',
-                    cancelButton: 'swal2-biru-btn'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    game.endGame();
-                }
-            });
-        });
-
         // Reset button
         $('#labelReset').on('click', function() {
             const warningReset = messages.warningReset[game.language] || messages.warningReset['en'];
