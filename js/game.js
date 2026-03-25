@@ -18,7 +18,7 @@ var game = {
     // Timer properties
     timer: null,
     timerStarted: false,
-    timeLeft: localStorage.getItem('timeLeft') ? parseInt(localStorage.getItem('timeLeft'), 10) : 20, // 20 minutes
+    timeLeft: localStorage.getItem('timeLeft') ? parseInt(localStorage.getItem('timeLeft'), 10) : 20 * 60, // 20 minutes = 1200 seconds
     
     // Run button state - Controls when results are shown
     hasRun: false,
@@ -227,7 +227,7 @@ var game = {
     resetTimer: function() {
         this.timerStarted = false;
         clearInterval(this.timer);
-        this.timeLeft = 20; // 20 minutes
+        this.timeLeft = 20 * 60; // 20 minutes = 1200 seconds
         localStorage.removeItem('timeLeft');
     },
 
