@@ -481,6 +481,14 @@ showResults: function () {
         performanceIcon = '💪';
     }
 
+    const quizDataForAI = {
+        score,
+        correctAnswers,
+        wrongAnswers,
+        performanceLevel,
+        wrongDetails: levels.map(level => level.name).filter(name => !this.solved.includes(name)).join(', ') || 'None'
+    };
+
     const correctDetails = this.solved.length > 0 ? `
         <div class="question-list correct-list">
             ${this.solved.map(q => {
@@ -636,6 +644,14 @@ showResults: function () {
                     ${performanceLevel}<br>
                     Score: ${score}% | Points: ${totalPoints}/${maxPossiblePoints} (${pointsPercentage}%)
                 </div>
+                <div class="ai-feedback-container" style="margin: 15px 0; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; text-align: left;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 1.1em; color: #334155;">🤖 Saran Pembelajaran AI</h3>
+                    </div>
+                    <div id="ai-feedback-content">
+                        <button id="btn-get-ai-feedback" style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Dapatkan Masukan dari Gemini AI ✨</button>
+                    </div>
+                </div>
                 <div class="player-info">
                     <div class="player-row">
                         <span class="player-label">👤 Player Name:</span>
@@ -681,6 +697,14 @@ showResults: function () {
             confirmButton: 'swal2-krem-btn',
             cancelButton: 'swal2-biru-btn'
         },
+        didOpen: () => {
+            const aiBtn = document.getElementById('btn-get-ai-feedback');
+            if (aiBtn) {
+                aiBtn.addEventListener('click', () => {
+                    game.handleAIFeedbackRequest(quizDataForAI);
+                });
+            }
+        },
         preConfirm: () => this.resetGame()
     }).then((result) => {
         if (result.isDismissed) {
@@ -711,6 +735,99 @@ showResults: function () {
     });
 },
 
+    /**
+     * Handle AI Feedback Request Flow
+     */
+    handleAIFeedbackRequest: function(quizData, forcePrompt = false) {
+        const defaultKey = 'AIzaSyCDbGXpG9nK3SxutQn5YHEoUHPvkT8nR4I';
+        const savedApiKey = localStorage.getItem('geminiApiKey') || defaultKey;
+        
+        if (forcePrompt || !savedApiKey) {
+            const feedbackContent = document.getElementById('ai-feedback-content');
+            if (feedbackContent) {
+                feedbackContent.innerHTML = `
+                    <div style="font-size: 0.9em; margin-bottom: 8px; color: #334155;">Masukkan API Key Gemini Anda:</div>
+                    <input type="password" id="ai-api-key-input" placeholder="AIzaSy..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 8px; box-sizing: border-box;" value="${savedApiKey}">
+                    <button id="btn-save-api-key" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Simpan & Mulai Analisis</button>
+                    <div style="font-size: 0.8em; margin-top: 8px; text-align: center;"><a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #3b82f6; text-decoration: none;">Dapatkan API Key Gratis di Google AI Studio</a></div>
+                `;
+                document.getElementById('btn-save-api-key').addEventListener('click', () => {
+                    const key = document.getElementById('ai-api-key-input').value.trim();
+                    if (key) {
+                        localStorage.setItem('geminiApiKey', key);
+                        this.fetchAIFeedback(key, quizData);
+                    }
+                });
+            }
+        } else {
+            this.fetchAIFeedback(savedApiKey, quizData);
+        }
+    },
+
+    /**
+     * Fetch AI Feedback from Gemini API
+     */
+    fetchAIFeedback: async function(apiKey, quizData) {
+        const feedbackContent = document.getElementById('ai-feedback-content');
+        if (!feedbackContent) return;
+
+        feedbackContent.innerHTML = '<div style="text-align: center; color: #64748b; padding: 15px;">⏳ Mengirim data ke AI dan menganalisis hasil Anda...</div>';
+
+        const promptText = `Saya baru saja bermain game edukasi bernama "Spaceflex" untuk belajar CSS Flexbox. 
+Skor saya: ${quizData.score}%. 
+Performa: ${quizData.performanceLevel}. 
+Pertanyaan yang dijawab benar: ${quizData.correctAnswers}.
+Pertanyaan yang dijawab salah: ${quizData.wrongAnswers}.
+Level/Konsep CSS yang saya salah menjawab: ${quizData.wrongDetails}.
+
+Tolong berikan:
+1. Feedback singkat dan memotivasi tentang performa saya.
+2. Saran pembelajaran ke depannya mengenai CSS Flexbox (khususnya konsep flexbox yang saya salah, jika ada). Saran harus aplikatif.
+
+Gunakan bahasa Indonesia yang kasual, ramah, dan ringkas (maksimal 3 paragraf). Jangan gunakan format markdown header (seperti # atau ##), tapi boleh list atau bold.`;
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: promptText }]
+                    }]
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                if (data.error && data.error.code === 400 && data.error.message.includes("API_KEY_INVALID")) {
+                    localStorage.removeItem('geminiApiKey');
+                    throw new Error("API Key tidak valid. Pastikan API key benar.");
+                }
+                throw new Error(data.error?.message || "Gagal mengambil respon dari AI.");
+            }
+
+            const aiText = data.candidates[0].content.parts[0].text;
+            
+            // Format markdown bold and linebreaks explicitly
+            let formattedText = aiText.replace(/\n/g, '<br>');
+            formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            feedbackContent.innerHTML = `<div style="font-size: 0.95em; line-height: 1.6; color: #334155;">${formattedText}</div>`;
+        } catch (error) {
+            feedbackContent.innerHTML = `
+                <div style="color: #ef4444; font-size: 0.9em; margin-bottom: 10px; padding: 10px; background: #fee2e2; border-radius: 8px;">❌ <strong>Error:</strong> ${error.message}</div>
+                <button id="btn-get-ai-feedback-retry" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Ganti API Key & Coba Lagi</button>
+            `;
+            
+            document.getElementById('btn-get-ai-feedback-retry').addEventListener('click', () => {
+                localStorage.removeItem('geminiApiKey');
+                this.handleAIFeedbackRequest(quizData, true);
+            });
+        }
+    },
 
     /**
      * Generate progress dots with numbers and sync with level navigation
