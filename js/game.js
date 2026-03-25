@@ -8,7 +8,7 @@ var game = {
     // PROPERTIES
     // ===========================================
     // Game state
-    language: window.location.hash.substring(1) || 'en',
+    language: window.location.hash.substring(1) || 'id',
     level: parseInt(localStorage.level, 10) || 0,
     answers: (localStorage.answers && JSON.parse(localStorage.answers)) || {},
     solved: (localStorage.solved && JSON.parse(localStorage.solved)) || [],
@@ -1003,7 +1003,7 @@ Gunakan bahasa Indonesia yang kasual, ramah, dan ringkas (maksimal 3 paragraf). 
         $('#after').text(level.after);
         $('#next').removeClass('animated animation').addClass('disabled');
 
-        const instructions = level.instructions[this.language] || level.instructions.en;
+        const instructions = level.instructions[this.language] || level.instructions['id'] || level.instructions.en;
         $('#instructions').html(instructions);
 
         // Update navigation arrows
