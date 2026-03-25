@@ -1149,6 +1149,26 @@ Gunakan bahasa Indonesia yang kasual, ramah, dan ringkas (maksimal 3 paragraf). 
      * Bind UI events
      */
     bindUIEvents: function() {
+        // Finish Quiz button
+        $('#finishQuizBtn').on('click', function() {
+            Swal.fire({
+                title: 'Selesai Lebih Awal?',
+                text: 'Apakah Anda yakin ingin mengakhiri kuis sekarang dan melihat hasilnya?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Selesaikan',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'swal2-krem-btn',
+                    cancelButton: 'swal2-biru-btn'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    game.endGame();
+                }
+            });
+        });
+
         // Reset button
         $('#labelReset').on('click', function() {
             const warningReset = messages.warningReset[game.language] || messages.warningReset['en'];

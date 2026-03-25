@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="id">
 <head>
     <meta charset="utf-8">
@@ -16,6 +16,12 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/quiz.css">
+    <link rel="stylesheet" href="css/pdf-viewer.css">
+    <link rel="stylesheet" href="css/star-rating.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/responsive.css">
 
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -60,11 +66,17 @@
     <nav>
         <div class="nav-container">
             <div class="logo">Spaceflex</div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Beranda</a></li>
-                <li><a href="#features" class="nav-link">Fitur</a></li>
-                <li><a href="#gameplay" class="nav-link">Gameplay</a></li>
-            </ul>
+            <div class="nav-right">
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link">Beranda</a></li>
+                    <li><a href="#features" class="nav-link">Materi</a></li>
+                    <li><a href="#Credits" class="nav-link">Tentang Kami</a></li>
+                </ul>
+                <div class="star-counter">
+                    <span class="star-icon">⭐</span>
+                    <span class="star-count">0</span>
+                </div>
+            </div>
         </div>
     </nav>
     
@@ -72,65 +84,472 @@
     <section class="hero" id="home">
         <div class="hero-content">
             <h1>Spaceflex</h1>
-            <p>Jelajahi galaksi yang tak terbatas, temukan planet baru, dan jadilah penjelajah luar angkasa terhebat dalam petualangan epik yang menantang!</p>
+            <p>Ikuti misi luar angkasa seru untuk menguasai Flexbox, dari dasar hingga mahir, langsung di tengah galaksi tak berujung.</p>        
             <div class="cta-buttons">
                 <a href="game.html" class="btn btn-primary">Mainkan Sekarang</a>
-                <a href="#gameplay" class="btn btn-secondary">Tonton Trailer</a>
             </div>
         </div>
     </section>
     
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Fitur Game</h2>
-                <p>Rasakan pengalaman luar angkasa yang tak terlupakan</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="feature-icon">🚀</span>
-                    <h3>Eksplorasi Galaksi</h3>
-                    <p>Jelajahi ribuan planet dengan ekosistem unik, alien misterius, dan harta karun yang menunggu untuk ditemukan.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">⚔️</span>
-                    <h3>Pertempuran Epik</h3>
-                    <p>Terlibat dalam pertempuran luar angkasa yang intens dengan sistem pertarungan yang dinamis dan senjata futuristik.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🛸</span>
-                    <h3>Pesawat Kustom</h3>
-                    <p>Bangun dan kustomisasi pesawat luar angkasa impianmu dengan berbagai komponen dan teknologi canggih.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🌟</span>
-                    <h3>Grafis Memukau</h3>
-                    <p>Nikmati visual luar angkasa yang menakjubkan dengan teknologi rendering terdepan dan efek visual yang spektakuler.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">👥</span>
-                    <h3>Mode Multiplayer</h3>
-                    <p>Bergabung dengan teman-temanmu dalam misi kooperatif atau kompetisi seru di arena luar angkasa.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🎯</span>
-                    <h3>Misi Beragam</h3>
-                    <p>Selesaikan misi yang menantang, dari eksplorasi damai hingga pertempuran galaktik yang menegangkan.</p>
-                </div>
-            </div>
+    <!-- Video YouTube -->
+    <div class="video-section">
+        <div class="video-title">
+            <h2>Video Tutorial</h2>
+            <p>Pelajari Flexbox dengan video interaktif kami</p>
         </div>
-    </section>
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/j5NvpxsE__U" 
+                title="Tutorial Spaceflex: Belajar CSS Flexbox Lewat Game Luar Angkasa" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen             
+                aria-label="Tutorial video Spaceflex - Belajar CSS Flexbox">
+            </iframe>
+        </div>
+    </div>
+
+   <!-- Features Section -->
+<section class="features" id="features">
+  <div class="container">
+    <!-- Section Title -->
+    <div class="section-title">
+      <h2>Materi</h2>
+      <p>Rasakan serunya belajar Flexbox di tengah galaksi</p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="features-grid">
+
+      <!-- Feature: justify-content -->
+      <div class="feature-card" data-modal="justify-content">
+        <h3>justify-content</h3>
+        <p>
+          justify-content mengatur posisi item secara horizontal di sepanjang main axis,
+          misalnya menempatkan item di awal (flex-start), tengah (center), atau menyebar rata (space-between).
+        </p>
+      </div>
+
+      <!-- Feature: align-items -->
+      <div class="feature-card" data-modal="align-items">
+        <h3>align-items</h3>
+        <p>
+          align-items menentukan posisi item secara vertikal pada cross axis untuk semua item dalam satu baris,
+          dengan opsi seperti flex-start, center, atau stretch.
+        </p>
+      </div>
+
+      <!-- Feature: flex-direction -->
+      <div class="feature-card" data-modal="flex-direction">
+        <h3>flex-direction</h3>
+        <p>
+          flex-direction menetapkan arah barisan item dalam container,
+          bisa berupa row (horizontal), column (vertikal), atau versi reverse dari keduanya.
+        </p>
+      </div>
+
+      <!-- Feature: order -->
+      <div class="feature-card" data-modal="order">
+        <h3>order</h3>
+        <p>
+          order memungkinkan perubahan urutan tampilan item tanpa mengubah struktur HTML;
+          item dengan nilai lebih rendah akan muncul lebih dulu.
+        </p>
+      </div>
+
+      <!-- Feature: align-self -->
+      <div class="feature-card" data-modal="align-self">
+
+        <h3>align-self</h3>
+        <p>
+          align-self mengatur posisi vertikal satu item secara spesifik,
+          menimpa pengaturan align-items container jika diperlukan.
+        </p>
+      </div>
+
+      <!-- Feature: flex-wrap -->
+      <div class="feature-card" data-modal="flex-wrap">
+        <h3>flex-wrap</h3>
+        <p>
+          flex-wrap menentukan apakah item akan membungkus ke baris baru saat ruang tidak cukup,
+          dengan pilihan nowrap, wrap, atau wrap-reverse.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="features-grid2">
+        <!-- Feature: flex-flow -->
+        <div class="feature-card" data-modal="flex-flow">
+            <h3>flex-flow</h3>
+            <p>
+            flex-flow adalah shorthand untuk menggabungkan flex-direction dan flex-wrap,
+            sehingga arah dan pembungkusan bisa diatur sekaligus.
+            </p>
+        </div>
+
+        <!-- Feature: align-content -->
+        <div class="feature-card" data-modal="align-content">
+            <h3>align-content</h3>
+            <p>
+            align-content mengatur posisi beberapa baris item pada cross axis saat ada lebih dari satu baris,
+            contohnya menempatkan baris di awal, tengah, atau menyebar rata (space-around).
+            </p>
+        </div>
+        </div>
+  </div>
+      <div class="cta-handout">
+        <a data-modal="handout" class="btn btn-secondary">
+            Lihat Bahan Ajar
+        </a>
+    </div>
+
+
+</section>
+
+
+ <!-- Modals -->
+<div id="modal-justify-content" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>justify-content</h2>
+    <div class="modal-section">
+      <h3>Konsep Dasar</h3>
+      <p>Properti justify-content adalah kunci untuk mengontrol tata letak horizontal dalam flexbox. Properti ini memberikan kendali penuh atas cara elemen-elemen didistribusikan di sepanjang main axis container flex.</p>
+    </div>
     
+    <div class="modal-section">
+      <h3>Nilai-Nilai Properti</h3>
+      <ul>
+        <li><strong>flex-start</strong> | Mengumpulkan elemen di awal container, seperti barisan yang dimulai dari garis start</li>
+        <li><strong>center</strong> | Menempatkan elemen di tengah container, menciptakan keseimbangan visual yang sempurna</li>
+        <li><strong>flex-end</strong> | Mengumpulkan elemen di akhir container, memberikan tampilan yang unik</li>
+        <li><strong>space-between</strong> | Mendistribusikan elemen dengan jarak yang sama di antaranya, optimal untuk layout yang rapi</li>
+        <li><strong>space-around</strong> | Memberikan ruang di sekitar setiap elemen, menciptakan tampilan yang lebih bernapas</li>
+      </ul>
+    </div>
+
+    <div class="modal-section">
+      <h3>Tantangan Pengetahuan</h3>
+      <p>Bayangkan Anda sedang membuat navigasi website dengan beberapa tombol yang perlu didistribusikan merata tanpa jarak di ujung-ujungnya. Properti justify-content manakah yang paling tepat?</p>
+      <form class="quiz-form" data-correct="b">
+        <label><input type="radio" name="justify" value="a"> A. space-around - memberikan ruang di sekeliling setiap tombol</label>
+        <label><input type="radio" name="justify" value="b"> B. space-between - mendistribusikan tombol dengan jarak sama tanpa ruang di ujung</label>
+        <label><input type="radio" name="justify" value="c"> C. space-evenly - membagi ruang sama rata termasuk di ujung</label>
+        <label><input type="radio" name="justify" value="d"> D. flex-center - memusatkan semua tombol di tengah</label>
+        <div class="quiz-feedback" style="display: none;">
+          <p class="answer-status"></p>
+          <p class="answer-hint" style="display: none;">Jawaban yang benar: B. space-between</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal-align-items" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>align-items</h2>
+    <div class="modal-section">
+      <h3>Penjelasan</h3>
+      <p>Properti align-items mengatur perataan elemen secara vertikal dalam container flex. Nilai yang dapat digunakan:</p>
+      <ul>
+        <li><strong>flex-start:</strong> Elemen diratakan di atas container</li>
+        <li><strong>center:</strong> Elemen diratakan di tengah vertikal</li>
+        <li><strong>flex-end:</strong> Elemen diratakan di bawah container</li>
+        <li><strong>stretch:</strong> Elemen diregangkan memenuhi tinggi container</li>
+        <li><strong>baseline:</strong> Elemen diratakan berdasarkan baseline teks</li>
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h3>Soal Latihan</h3>
+      <p>Nilai align-items apa yang harus digunakan agar elemen mengisi seluruh tinggi container secara otomatis?</p>
+      <form class="quiz-form" data-correct="c">
+        <label><input type="radio" name="align" value="a"> A. flex-fill</label>
+        <label><input type="radio" name="align" value="b"> B. full-height</label>
+        <label><input type="radio" name="align" value="c"> C. stretch</label>
+        <label><input type="radio" name="align" value="d"> D. extend</label>
+        <div class="quiz-feedback" style="display: none;">
+          <p class="answer-status"></p>
+          <p class="answer-hint" style="display: none;">Jawaban yang benar: C. stretch</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal-flex-direction" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>flex-direction</h2>
+    <div class="modal-section">
+      <h3>Penjelasan</h3>
+      <p>Properti flex-direction menentukan arah penyusunan elemen dalam container flex. Nilai yang dapat digunakan:</p>
+      <ul>
+        <li><strong>row:</strong> Elemen disusun horizontal dari kiri ke kanan</li>
+        <li><strong>row-reverse:</strong> Elemen disusun horizontal dari kanan ke kiri</li>
+        <li><strong>column:</strong> Elemen disusun vertikal dari atas ke bawah</li>
+        <li><strong>column-reverse:</strong> Elemen disusun vertikal dari bawah ke atas</li>
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h3>Soal Latihan</h3>
+      <p>Untuk membuat layout vertikal dari atas ke bawah, flex-direction apa yang harus digunakan?</p>
+      <form class="quiz-form" data-correct="c">
+        <label><input type="radio" name="direction" value="a"> A. vertical</label>
+        <label><input type="radio" name="direction" value="b"> B. row</label>
+        <label><input type="radio" name="direction" value="c"> C. column</label>
+        <label><input type="radio" name="direction" value="d"> D. top-bottom</label>
+        <div class="quiz-feedback" style="display: none;">
+          <p class="answer-status"></p>
+          <p class="answer-hint" style="display: none;">Jawaban yang benar: C. column</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal-order" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>order</h2>
+    <div class="modal-section">
+      <h3>Penjelasan</h3>
+      <p>Properti order mengatur urutan tampilan elemen flex tanpa mengubah HTML. Karakteristik properti order:</p>
+      <ul>
+        <li>Menggunakan nilai angka (positif atau negatif)</li>
+        <li>Nilai lebih kecil tampil lebih dulu</li>
+        <li>Nilai default adalah 0</li>
+        <li>Berguna untuk responsive layout</li>
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h3>Soal Latihan</h3>
+      <p>Jika ada 3 elemen dengan order: 2, -1, dan 1, urutan tampilan yang benar adalah:</p>
+      <form class="quiz-form" data-correct="b">
+        <label><input type="radio" name="order" value="a"> A. 2, 1, -1</label>
+        <label><input type="radio" name="order" value="b"> B. -1, 1, 2</label>
+        <label><input type="radio" name="order" value="c"> C. 1, 2, -1</label>
+        <label><input type="radio" name="order" value="d"> D. 2, -1, 1</label>
+        <div class="quiz-feedback" style="display: none;">
+          <p class="answer-status"></p>
+          <p class="answer-hint" style="display: none;">Jawaban yang benar: B. -1, 1, 2</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal-align-self" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>align-self</h2>
+    <div class="modal-section">
+      <h3>Penjelasan</h3>
+      <p>Properti align-self mengatur perataan individual elemen, menimpa align-items container. Nilai yang dapat digunakan:</p>
+      <ul>
+        <li><strong>auto:</strong> Mengikuti align-items container</li>
+        <li><strong>flex-start:</strong> Elemen diratakan di atas</li>
+        <li><strong>center:</strong> Elemen diratakan di tengah</li>
+        <li><strong>flex-end:</strong> Elemen diratakan di bawah</li>
+        <li><strong>stretch:</strong> Elemen diregangkan</li>
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h3>Soal Latihan</h3>
+      <p>Jika ingin satu elemen berada di tengah vertikal sementara yang lain mengikuti align-items container, nilai align-self apa yang digunakan?</p>
+      <form class="quiz-form" data-correct="b">
+        <label><input type="radio" name="align-self" value="a"> A. middle</label>
+        <label><input type="radio" name="align-self" value="b"> B. center</label>
+        <label><input type="radio" name="align-self" value="c"> C. vertical-center</label>
+        <label><input type="radio" name="align-self" value="d"> D. self-center</label>
+        <div class="quiz-feedback" style="display: none;">
+          <p class="answer-status"></p>
+          <p class="answer-hint" style="display: none;">Jawaban yang benar: B. center</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal-flex-wrap" class="modal">        
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>flex-wrap</h2>
+    <div class="modal-section">
+      <h3>Penjelasan</h3>
+      <p>Properti flex-wrap menentukan apakah elemen flex akan pindah baris ketika tidak cukup ruang. Nilai yang dapat digunakan:</p>
+      <ul>
+        <li><strong>nowrap:</strong> Elemen tetap dalam satu baris (default)</li>
+        <li><strong>wrap:</strong> Elemen pindah ke baris baru bila perlu</li>
+        <li><strong>wrap-reverse:</strong> Elemen pindah ke baris baru dengan urutan terbalik</li>
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h3>Soal Latihan</h3>
+      <p>Nilai flex-wrap apa yang harus digunakan agar elemen otomatis pindah ke baris baru saat container terlalu sempit?</p>
+      <form class="quiz-form" data-correct="c">
+        <label><input type="radio" name="wrap" value="a"> A. auto-wrap</label>
+        <label><input type="radio" name="wrap" value="b"> B. break</label>
+        <label><input type="radio" name="wrap" value="c"> C. wrap</label>
+        <label><input type="radio" name="wrap" value="d"> D. new-line</label>
+        <div class="quiz-feedback" style="display: none;">
+          <p class="answer-status"></p>
+          <p class="answer-hint" style="display: none;">Jawaban yang benar: C. wrap</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal-flex-flow" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>flex-flow</h2>
+    <div class="modal-section">
+      <h3>Penjelasan</h3>
+      <p>Properti flex-flow adalah shorthand untuk flex-direction dan flex-wrap. Format penulisan:</p>
+      <ul>
+        <li><strong>flex-flow: [direction] [wrap]</strong></li>
+        <li>Contoh: flex-flow: row wrap</li>
+        <li>Contoh: flex-flow: column nowrap</li>
+        <li>Lebih efisien daripada menulis dua properti terpisah</li>
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h3>Soal Latihan</h3>
+      <p>Penulisan flex-flow yang benar untuk membuat layout vertikal dengan pembungkusan adalah:</p>
+      <form class="quiz-form" data-correct="b">
+        <label><input type="radio" name="flow" value="a"> A. flex-flow: vertical wrap</label>
+        <label><input type="radio" name="flow" value="b"> B. flex-flow: column wrap</label>
+        <label><input type="radio" name="flow" value="c"> C. flex-flow: down wrap</label>
+        <label><input type="radio" name="flow" value="d"> D. flex-flow: column-wrap</label>
+        <div class="quiz-feedback" style="display: none;">
+          <p class="answer-status"></p>
+          <p class="answer-hint" style="display: none;">Jawaban yang benar: B. flex-flow: column wrap</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal-align-content" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>align-content</h2>
+    <div class="modal-section">
+      <h3>Penjelasan</h3>
+      <p>Properti align-content mengatur jarak antar baris dalam container flex multi-baris. Nilai yang dapat digunakan:</p>
+      <ul>
+        <li><strong>flex-start:</strong> Baris dikumpulkan di awal container</li>
+        <li><strong>center:</strong> Baris dikumpulkan di tengah container</li>
+        <li><strong>flex-end:</strong> Baris dikumpulkan di akhir container</li>
+        <li><strong>space-between:</strong> Baris didistribusikan merata</li>
+        <li><strong>space-around:</strong> Baris dengan jarak sama di sekitarnya</li>
+        <li><strong>stretch:</strong> Baris diregangkan memenuhi container</li>
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h3>Soal Latihan</h3>
+      <p>Nilai align-content apa yang membuat jarak sama antar baris, termasuk di atas dan bawah container?</p>
+      <form class="quiz-form" data-correct="a">
+        <label><input type="radio" name="align-content" value="a"> A. space-around</label>
+        <label><input type="radio" name="align-content" value="b"> B. space-between</label>
+        <label><input type="radio" name="align-content" value="c"> C. distribute</label>
+        <label><input type="radio" name="align-content" value="d"> D. even-spacing</label>
+        <div class="quiz-feedback" style="display: none;">
+          <p class="answer-status"></p>
+          <p class="answer-hint" style="display: none;">Jawaban yang benar: A. space-around</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal-handout" class="modal">
+  <div class="modal-content modal-content-pdf">
+    <span class="close">&times;</span>
+    <h2>📖 Bahan Ajar Flexbox</h2>
+    <p class="pdf-description">
+      Jelajahi ringkasan materi Flexbox lengkap untuk memperkuat pemahamanmu.
+      Kamu bisa gunakan Bahan Ajar ini sebagai panduan cepat saat bermain game Spaceflex.
+    </p>
+
+    <!-- Tampilkan PDF langsung -->
+    <div class="pdf-viewer">
+      <object
+        data="images/Handout Spaceflex Flexbox CSS.pdf"
+        type="application/pdf"
+        width="100%"
+        height="600px">
+        <p>Browser Anda tidak mendukung tampilan PDF langsung. 
+          <a href="images/Handout Spaceflex Flexbox CSS.pdf" target="_blank">Klik di sini untuk membuka PDF</a>
+        </p>
+      </object>
+    </div>
+
+    <!-- Tombol unduh dan buka di tab baru -->
+    <div class="pdf-actions">
+      <a href="images/Handout Spaceflex Flexbox CSS.pdf" download class="btn btn-primary">
+        💾 Unduh PDF
+      </a>
+      <a href="images/Handout Spaceflex Flexbox CSS.pdf" target="_blank" class="btn btn-secondary">
+        🔍 Buka di Tab Baru
+      </a>
+    </div>
+  </div>
+</div>
+
+<section id="Credits" class="credits-section">
+  <div class="container">
+    <h2>tentang kami</h2>
+    <p class="credits-description">
+      Website <strong>Spaceflex</strong> dibuat sebagai media pembelajaran interaktif untuk memahami
+      <em>Flexbox CSS </em> dengan tema luar angkasa.
+    </p>
+
+    <!-- Grid Tim -->
+    <div class="credits-grid">
+      
+      <!-- Anggota 1 -->
+      <div class="credits-card">
+        <img src="images/kholis.jpg" alt="Nur Kholis Wakhid">
+        <h3>Nur Kholis Wakhid</h3>
+      </div>
+
+      <!-- Anggota 2 -->
+      <div class="credits-card">
+        <img src="images/izul.jpg" alt="Ahmad Zulkifli Baihaqi">
+        <h3>Ahmad Zulkifli Baihaqi</h3>
+      </div>
+
+      <!-- Anggota 3 -->
+      <div class="credits-card">
+        <img src="images/cahya.jpg" alt="Cahya Dwi Rahmawati">
+        <h3>Cahya Dwi Rahmawati</h3>
+      </div>
+
+      <!-- Anggota 4 -->
+      <div class="credits-card">
+        <img src="images/yudha.jpg" alt="Yudha Bima Herlambang">
+        <h3>Yudha Bima Herlambang</h3>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+ 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Spaceflex. Semua hak dilindungi. Siap untuk petualangan luar angkasa?</p>
+            <p>&copy; 2025 Spaceflex. Semua hak dilindungi. belajar flexbox di galaksi</p>
         </div>
     </footer>
+    
+    <script src="js/progress.js"></script>
     <script>
-
-        // Generate starfield
         function createStarfield() {
             const starsContainer = document.getElementById('stars');
             const numStars = 200;
@@ -145,7 +564,7 @@
                 star.style.animationDelay = Math.random() * 3 + 's';
                 starsContainer.appendChild(star);
             }
-        }
+        }   
         
         // Generate floating particles
         function createParticles() {
@@ -163,6 +582,26 @@
                 particlesContainer.appendChild(particle);
             }
         }
+
+        // Spread elements evenly
+        function spreadEvenly(elements, rows, cols) {
+            const cellWidth = window.innerWidth / cols;
+            const cellHeight = window.innerHeight / rows;
+            let index = 0;
+
+            elements.forEach(el => {
+                const row = Math.floor(index / cols);
+                const col = index % cols;
+
+                const topPos = row * cellHeight + (Math.random() * cellHeight * 0.4);
+                const leftPos = col * cellWidth + (Math.random() * cellWidth * 0.4);
+
+                el.style.top = `${topPos}px`;
+                el.style.left = `${leftPos}px`;
+
+                index++;
+            });
+        }
         
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -178,79 +617,175 @@
             });
         });
         
-        // Parallax effect for hero elements
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero');
-            const speed = scrolled * 0.5;
-            parallax.style.transform = `translateY(${speed}px)`;
-        });
+
         
-        // Initialize effects
-        createStarfield();
-        createParticles();
-        
-        // Add entrance animation to feature cards
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+        // Mobile menu functionality
+        function toggleMobileMenu() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.classList.toggle('show');
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize starfield and particles
+            createStarfield();
+            createParticles();
+
+            // Mobile menu button
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                const navMenu = document.querySelector('.nav-menu');
+                const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+                
+                if (!e.target.closest('.nav-right') && 
+                    !e.target.closest('.mobile-menu-btn') && 
+                    navMenu.classList.contains('show')) {
+                    navMenu.classList.remove('show');
                 }
             });
-        }, observerOptions);
-        
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            observer.observe(card);
+
+            // Planet positioning
+            const planets = document.querySelectorAll(".planet");
+            spreadEvenly(planets, 2, Math.ceil(planets.length / 2));
+            planets.forEach(planet => {
+                const delay = (Math.random() * -20).toFixed(2) + "s";
+                planet.style.animationDelay = delay;
+            });
+
+            // Alien positioning
+            const aliens = document.querySelectorAll(".alien");
+            spreadEvenly(aliens, 2, Math.ceil(aliens.length / 2));
+            aliens.forEach(alien => {
+                const delay = (Math.random() * -10).toFixed(2) + "s";
+                alien.style.animationDelay = delay;
+            });
+
+            // Modal functionality
+            const featureCards = document.querySelectorAll('.feature-card');
+            const modals = document.querySelectorAll('.modal');
+            const closeButtons = document.querySelectorAll('.close');
+
+            // Open modal when any element with data-modal is clicked
+            document.querySelectorAll('[data-modal]').forEach(el => {
+                el.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    const modal = document.getElementById(`modal-${modalId}`);
+                    if (modal) {
+                        modal.classList.add('show');
+                        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                    }
+                });
+            });
+
+
+
+            // Close modal when X button is clicked
+            closeButtons.forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    modal.classList.remove('show');
+                    document.body.style.overflow = 'auto'; // Restore scrolling
+                });
+            });
+
+            // Close modal when clicking outside the modal content
+            modals.forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.classList.remove('show');
+                        document.body.style.overflow = 'auto'; // Restore scrolling
+                    }
+                });
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const openModal = document.querySelector('.modal.show');
+                    if (openModal) {
+                        openModal.classList.remove('show');
+                        document.body.style.overflow = 'auto'; // Restore scrolling
+                    }
+                }
+            });
+
+            // Add entrance animation to feature cards
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                observer.observe(card);
+            });
+
+            // Scroll to top on page load
+            window.scrollTo(0, 0);
+
+            // Quiz functionality
+            document.querySelectorAll('.quiz-form').forEach(form => {
+                const correctAnswer = form.dataset.correct;
+                const labels = form.querySelectorAll('label');
+                const feedback = form.querySelector('.quiz-feedback');
+                const answerStatus = feedback.querySelector('.answer-status');
+                const answerHint = feedback.querySelector('.answer-hint');
+                
+                form.querySelectorAll('input[type="radio"]').forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        // Reset all labels
+                        labels.forEach(l => {
+                            l.classList.remove('selected', 'correct', 'incorrect');
+                        });
+                        
+                        // Show feedback
+                        feedback.style.display = 'block';
+                        
+                        // Handle the selected answer
+                        const selectedLabel = e.target.closest('label');
+                        selectedLabel.classList.add('selected');
+                        
+                        if (e.target.value === correctAnswer) {
+                            selectedLabel.classList.add('correct');
+                            answerStatus.textContent = '✨ Benar! Bagus sekali!';
+                            answerStatus.className = 'answer-status correct';
+                        } else {
+                            selectedLabel.classList.add('incorrect');
+                            answerStatus.textContent = '❌ Ups, coba lagi!';
+                            answerStatus.className = 'answer-status incorrect';
+                        }
+                        
+                        // Show the correct answer with animation
+                        setTimeout(() => {
+                            labels.forEach(label => {
+                                const input = label.querySelector('input');
+                                if (input.value === correctAnswer) {
+                                    label.classList.add('correct');
+                                }
+                            });
+                            answerHint.style.display = 'block';
+                            setTimeout(() => {
+                                answerHint.classList.add('show');
+                            }, 50);
+                        }, 1000);
+                    });
+                });
+            });
         });
-
-document.addEventListener("DOMContentLoaded", function () {
-    function spreadEvenly(elements, rows, cols) {
-        const cellWidth = window.innerWidth / cols;
-        const cellHeight = window.innerHeight / rows;
-        let index = 0;
-
-        elements.forEach(el => {
-            const row = Math.floor(index / cols);
-            const col = index % cols;
-
-            // Ambil posisi tengah cell lalu tambahkan offset acak kecil
-            const topPos = row * cellHeight + (Math.random() * cellHeight * 0.4);
-            const leftPos = col * cellWidth + (Math.random() * cellWidth * 0.4);
-
-            el.style.top = `${topPos}px`;
-            el.style.left = `${leftPos}px`;
-
-            index++;
-        });
-    }
-
-    // Planet
-    const planets = document.querySelectorAll(".planet");
-    spreadEvenly(planets, 2, Math.ceil(planets.length / 2));
-    planets.forEach(planet => {
-        const delay = (Math.random() * -20).toFixed(2) + "s";
-        planet.style.animationDelay = delay;
-    });
-
-    // Alien
-    const aliens = document.querySelectorAll(".alien");
-    spreadEvenly(aliens, 2, Math.ceil(aliens.length / 2));
-    aliens.forEach(alien => {
-        const delay = (Math.random() * -10).toFixed(2) + "s";
-        alien.style.animationDelay = delay;
-    });
-
-    // Scroll selalu di atas saat reload
-    window.scrollTo(0, 0);
-});
-
     </script>
 
 </body>
