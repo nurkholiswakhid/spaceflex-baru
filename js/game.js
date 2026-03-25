@@ -739,27 +739,11 @@ showResults: function () {
      * Handle AI Feedback Request Flow
      */
     handleAIFeedbackRequest: function(quizData) {
-        const savedApiKey = localStorage.getItem('geminiApiKey');
-        if (!savedApiKey) {
-            const feedbackContent = document.getElementById('ai-feedback-content');
-            if (feedbackContent) {
-                feedbackContent.innerHTML = `
-                    <div style="font-size: 0.9em; margin-bottom: 8px; color: #334155;">Masukkan API Key Gemini Anda:</div>
-                    <input type="password" id="ai-api-key-input" placeholder="AIzaSy..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 8px; box-sizing: border-box;">
-                    <button id="btn-save-api-key" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Simpan & Mulai Analisis</button>
-                    <div style="font-size: 0.8em; margin-top: 8px; text-align: center;"><a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #3b82f6; text-decoration: none;">Dapatkan API Key Gratis di Google AI Studio</a></div>
-                `;
-                document.getElementById('btn-save-api-key').addEventListener('click', () => {
-                    const key = document.getElementById('ai-api-key-input').value.trim();
-                    if (key) {
-                        localStorage.setItem('geminiApiKey', key);
-                        this.fetchAIFeedback(key, quizData);
-                    }
-                });
-            }
-        } else {
-            this.fetchAIFeedback(savedApiKey, quizData);
-        }
+        // Obfuscated Gemini API Key to prevent simple scraping
+        const _0xkey = ['QUl6YVN', '5QUZDNllJcnN3SHRr', 'cWFTWElzT1kx', 'c2VFaXVGNll', 'OOWJV'];
+        const apiKey = atob(_0xkey.join(''));
+        
+        this.fetchAIFeedback(apiKey, quizData);
     },
 
     /**
@@ -801,8 +785,7 @@ Gunakan bahasa Indonesia yang kasual, ramah, dan ringkas (maksimal 3 paragraf). 
 
             if (!response.ok) {
                 if (data.error && data.error.code === 400 && data.error.message.includes("API_KEY_INVALID")) {
-                    localStorage.removeItem('geminiApiKey');
-                    throw new Error("API Key tidak valid. Pastikan API key benar.");
+                    throw new Error("API Key internal tidak valid. Hubungi administrator.");
                 }
                 throw new Error(data.error?.message || "Gagal mengambil respon dari AI.");
             }
@@ -817,11 +800,10 @@ Gunakan bahasa Indonesia yang kasual, ramah, dan ringkas (maksimal 3 paragraf). 
         } catch (error) {
             feedbackContent.innerHTML = `
                 <div style="color: #ef4444; font-size: 0.9em; margin-bottom: 10px; padding: 10px; background: #fee2e2; border-radius: 8px;">❌ <strong>Error:</strong> ${error.message}</div>
-                <button id="btn-get-ai-feedback-retry" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Ganti API Key & Coba Lagi</button>
+                <button id="btn-get-ai-feedback-retry" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">Coba Lagi</button>
             `;
             
             document.getElementById('btn-get-ai-feedback-retry').addEventListener('click', () => {
-                localStorage.removeItem('geminiApiKey');
                 this.handleAIFeedbackRequest(quizData);
             });
         }
